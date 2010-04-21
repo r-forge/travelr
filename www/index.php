@@ -58,10 +58,8 @@ echo $contents; } ?>
    model in R has eluded us since there hasn't been a good way to do
    <a href="http://en.wikipedia.org/wiki/Traffic_assignment">highway assignment</a>.  The TravelR project was initiated
    to bridge that gap.  The mastermind behind TravelR is Jeremy Raw, a professional travel demand modeler (and former
-   professional software developer) who currently works for the
-   <a href="http://www.virginiadot.org/projects/vtm/vtm.asp">Virginia Department of Transportation</a>. Note that
-   TravelR is a "hobby" project that is not officially sponsored or supported by VDOT; work on the project happens
-   in Jeremy's (rather limited) spare time.
+   professional software developer). Please be aware that TravelR is a "hobby" project for which no one is currently
+   getting paid.  Work on the project happens in Jeremy's (rather limited) spare time.
 </p>
 
 <h3>Audience</h3>
