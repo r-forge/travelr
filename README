@@ -1,8 +1,6 @@
 			R-Forge SVN README
 
-
-(See "http://download.r-forge.r-project.org/manuals/R-Forge_Manual.pdf"
-       for detailed information on registering a new project.)
+(See "http://download.r-forge.r-project.org/manuals/R-Forge_Manual.pdf")
 
 1. Introduction
 -----------------------------------------------------------------------
@@ -14,7 +12,7 @@ Subversion (SVN).
 
 2. The directory you're in
 -----------------------------------------------------------------------
-This is the repository of your project. It contains two important
+This is the repository of the TravelR project. It contains two important
 pre-defined directories namely 'pkg' and 'www'. These directories must 
 not be deleted otherwise R-Forge's core functionality will not be 
 available (i.e., daily checking and building of your package or the 
@@ -22,6 +20,11 @@ project websites).
 'pkg' and 'www' are standardized and therefore are going to be
 described in this README. The rest of your repository can be used as
 you like.
+
+As of 4/25/2010, the working package is still a certain distance off.
+Look at the 'pre-alpha' directory for source and a non-auto-built
+version of the package.  Once that seems to be "code complete", it will
+move to the 'pkg' directory and the 'pre-alpha' side will disappear.
 
 3. 'pkg' directory
 -----------------------------------------------------------------------
@@ -51,6 +54,14 @@ website.
 This directory contains the project homepage which gets updated hourly
 on R-Forge, so please take into consideration that it will not be 
 available right after you commit your changes or additions. 
+
+5. 'pre-alpha' directory
+-----------------------------------------------------------------------
+A non-standard folder with sub-folders for the source of each project.
+The latest successfully built binary package (Windows, R 2.10.1) is
+located in the root of this folder.  It may be downloaded and installed
+from the local zip file.  Contact Jeremy Raw (jrawbits) if you have
+trouble with this directory.
 
 5. Help
 -----------------------------------------------------------------------
