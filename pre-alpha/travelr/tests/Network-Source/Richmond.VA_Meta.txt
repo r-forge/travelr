@@ -1,0 +1,2 @@
+numZones 1023
+firstThruNode 1024
