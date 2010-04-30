@@ -28,7 +28,7 @@ map.highway.nodes(nodes, numZones )
   \item{x}{
 	The \code{highway.node.map} object to be printed
 }
-  \item{...}{
+  \item{\dots}{
 	Additional arguments passed to generic methods
 }
 }

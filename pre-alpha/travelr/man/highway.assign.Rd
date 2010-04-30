@@ -35,16 +35,9 @@ Returns a highway.assignment.result object
 \author{
 Jeremy Raw
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
 \seealso{
 \code{\link{assignment.set}}, ~~~
 }
 \examples{
 \dontrun{print("Examples yet to come")}
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-% \keyword{ ~kwd1 }
-% \keyword{ ~kwd2 }% __ONLY ONE__ keyword per line

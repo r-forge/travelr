@@ -22,7 +22,7 @@
 // define DEBUG_TRAVELR to turn on debugging
 // turn off noxious outputs by commenting out the sub-definitions
 
-#define DEBUG_TRAVELR
+#undef DEBUG_TRAVELR
 #ifdef DEBUG_TRAVELR
 #undef  DEBUG_TRAVELR_PATH
 #define DEBUG_TRAVELR_LOAD

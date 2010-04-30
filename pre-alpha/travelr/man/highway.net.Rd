@@ -55,7 +55,7 @@ as.highway.net(links, numNodes, numZones,
   \item{x}{
     The \code{highway.net} object to be printed
 }
-  \item{...}{
+  \item{\dots}{
     Additional arguments passed to generic methods
 }
 }

@@ -4,6 +4,7 @@
 \alias{.walk.paths}
 \alias{.skim.paths}
 \alias{.load.paths}
+\alias{.build.and.load.paths}
 \alias{.intercept.paths}
 
 \title{
@@ -17,8 +18,9 @@ origin-destination matrix onto the links on the shortest path between
 each origin-destination pair.
 }
 \usage{
-.shortest.paths(network.set, costs)
+.shortest.paths(network.set, costs,penalties=NULL)
 .load.paths(paths, demand)
+.build.and.load.paths(network.set, costs,demand,penalties=NULL)
 .skim.paths(paths, costs, empty.value = 0)
 .intercept.paths(paths, links)
 .walk.paths(paths, origins, dests, permute=TRUE)
@@ -32,6 +34,9 @@ each origin-destination pair.
 }
   \item{costs}{
   A vector of costs for each link in the network
+}
+  \item{penalties}{
+  A vector of penalty values for each turn penalty in the network
 }
   \item{paths}{
   A shortest-path tree for a particular network

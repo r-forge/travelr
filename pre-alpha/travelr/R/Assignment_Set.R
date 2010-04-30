@@ -39,8 +39,8 @@ free.flow<-function(aset)
 # build.paths will produce a list of path sets from route costs
 
 build.paths<-function(aset,costs)
-	mapply(function(ac,cost) .shortest.paths(ac$network,cost),
-	       aset$classes,costs,
+	mapply(function(ac,cost,penalties) .shortest.paths(ac$network,cost,penalties),
+	       aset$classes,costs,MoreArgs=(penalties=aset$penalties),
 		   USE.NAMES=TRUE, # Keep assignment class names on resulting list of path structures
 		   SIMPLIFY=FALSE) # and leave results as a list
 
@@ -57,13 +57,13 @@ load.paths<-function(aset,paths)
 # logic at C-level.  It's useful in link-based assignment, but not in path-based assignment
 #    where one is equilibrating path sets, rather than volume sets
 build.and.load.paths<-function(aset,costs) {
-	result=mapply( function(ac,cost).build.and.load.paths(ac$network,cost,ac$demand),
-				   aset$classes,costs,
+	result=mapply( function(ac,cost,penalties).build.and.load.paths(ac$network,cost,ac$demand,penalties),
+				   aset$classes,costs,MoreArgs=list(penalties=aset$penalties),
 				   USE.NAMES=TRUE, # Keep assignment class names on resulting volume set list
 				   SIMPLIFY=FALSE) # and leave results as a list (each element of which is
 				                   # a list with "paths" and "volumes" elements)
 	paths = lapply(result,function(p)p$paths)      # Paths for all classes in one list
-	volumes = lapply(result,function(p)p$volumes)  # Volumes for all classes in one list
+	volumes = as.data.frame(lapply(result,function(p)p$volumes))  # Volumes for all classes in one list
 	return( list(paths=paths, volumes=volumes, result=result) )
 }
 
@@ -74,11 +74,11 @@ intercept.paths<-function( paths, links )
 
 # skim paths returns a demand matrix by performing a function on a set of numeric values
 # corresponding to the links on each path between origin and destination
-skim.paths<-function( paths, costs, empty.val=0.0, FUN="sum" ) {
+skim.paths<-function( paths, costs, empty.val=0.0, FUN="sum", ... ) {
 	if ( FUN=="sum" )
 		return( .skim.paths(paths,costs,empty.val) )
 	else
-		stop("Not implemented: Skims using functions other than 'sum'")
+		stop("Skimming with functions other than 'sum' is not yet implemented")
 }
 
 # Assignment Set
@@ -98,38 +98,9 @@ skim.paths<-function( paths, costs, empty.val=0.0, FUN="sum" ) {
 #           demand (matrix)
 #           cost.function (optional if assignment set cost function is defined)
 
-cost.integrator <- function( cost.function, ff.vol, ff.cost, cong.vol, cong.cost, depth=0, tol=1e-4, max.depth=7, ... ) {
-	# Integrate the cost function using adaptive quadrature with inside-interval tolerance testing
-	# The tolerance indicates how close the mid-segment interpolated cost must be to its true value in order to avoid
-	# recursing into each of the sub-intervals
-	# May do as many as 2^depth+1 calls to cost.function 
-	mid.cost  <- (cong.cost-ff.cost)/2
-	vol.ivl   <- (cong.vol-ff.vol)/2
-	mid.vol   <- ff.vol+vol.ivl
-	true.cost <- cost.function(mid.vol)
-	test.diff <- abs(mid.cost-true.cost)/true.cost
-	if ( test.diff < tol || depth>=max.depth )  # limit on recursion
-		result <- sum(vol.ivl*((ff.cost+true.cost)+(true.cost+cong.cost)))/2 # area for this part
-	else {
-		depth <- depth+1
-		result<- Recall( cost.function, ff.cost, ff.vol, mid.vol, true.cost, tol=tol, depth=depth, ... ) +
-	             Recall( cost.function, true.cost, mid.vol, cong.vol, cong.cost, tol=tol, depth=depth, ... )
-	}
-	attr(result,"max.depth")<-depth
-	return(result)
-}
-
-# "correct" objective function
-build.serious.objective.function<-function(cost.function, ff.vol, ff.cost, tol=1e-4, ...)
-	function(cost, volume) cost.integrator(cost.function, ff.vol, ff.cost, volume, cost, tol, ...)
-
-# expedient objective function
-build.easy.objective.function<-function(cost.function, ff.vol, ff.cost, ...)
-	function(cost,volume) sum( cost*volume )
-
 # Construct an assignment.set with all the right pieces in all the right places
 new.assignment.set <- function( network,classes,cost.volume.type=c("vector","matrix"),cost.function=NULL,
-	make.objective.function=NULL, obj.tol=1e-4, ... ) {
+	objective.function=NULL, obj.tol=1e-4, ... ) {
 	# We need cost functions to handle either a list/data.frame of volumes or a numeric vector
 	# But we would like to figure out how to determine whether to boil down the volumes to a vector
 	#  or pass the entire data.frame.
@@ -142,6 +113,14 @@ new.assignment.set <- function( network,classes,cost.volume.type=c("vector","mat
 	if ( is.null(network) || class(network) != "highway.net" )
 		stop("Assignment set requires a highway network")
 	aset<-list(network=network)
+	if ( is.null(network$Penalty.fields) || is.null(network$Penalty[[network$Penalty.fields[["Penalty.value"]]]]) )
+		aset$penalties<-NULL
+	else
+		aset$penalties<-network$Penalty[[network$Penalty.fields[["Penalty.value"]]]] # may be NULL
+
+	# Check classes
+	if ( any(sapply(classes,function(c) class(c) )!="highway.assignment.class") )
+		stop("Must use make.assignment.class and add.assignment.classes to build the 'classes' list")
 
 	# Check cost.volume.type and construct a function to transform the volumes appropriately
 	if ( length(cost.volume.type)>1 ) # Use default: "vector"
@@ -173,30 +152,19 @@ new.assignment.set <- function( network,classes,cost.volume.type=c("vector","mat
 			}
 	}
 
-	# Check classes
-	if ( !is.list(classes) )
-		stop("Assignment set cannot be built from non-list 'classes'")
-
 	# Validate presence of required class elements
-	bad.names <-names(classes)!=sapply(classes,function(x){ ifelse(is.null(x$name),"", x$name)})
-	if ( any(bad.names) )
-		stop("Assignment set classes do not have consistent names:\n",paste(names(classes)[bad.names],collapse=", "))
-	missing.cost.function<-sapply( classes, function(x) { if (is.null(x$cost.function)) TRUE; FALSE } )
-	if ( !all(missing.cost.function) && any(missing.cost.function) )
-		message("Assignment set classes have incomplete class functions:",paste(names(classes)[missing.cost.function],collapse=", "))
-	missing.demand<-sapply( classes, function(x) { if (is.null(x$demand)) TRUE; FALSE } )
-	if ( any(missing.demand) )
-		stop("Assignment set classes are missing required demand matrix:",paste(names(classes)[missing.demand],collapse=", "))
-	missing.network.set<-sapply( classes, function(x) { if (is.null(x$network.set)||class(x$network.set)!="highway.network.set") TRUE; FALSE } )
-	if ( any(missing.network.set) )
-		stop("Assignment set classes are missing suitable network set:",paste(names(classes)[missing.demand],collapse=", "))
-	aset$classes<-classes
+	if ( validate.assignment.classes(aset,classes) )
+		aset$classes<-classes
+	else
+		stop("Invalid assignment class.")
 
 	# Construct free-flow volume and cost, and build objective function for assignment
 	aset$ff.vol<-free.flow(aset)
-	aset$ff.cost<-aset$cost.function(aset$ff.vol)
-	if ( is.null(make.objective.function) ) make.objective.function<-build.easy.objective.function
-	aset$objective.function<-make.objective.function(cost.function,aset$ff.vol, aset$ff.cost, obj.tol,...)
+	aset$ff.cost<-aset$cost.function(aset$ff.vol,aset)
+	if ( is.null(objective.function) )
+		aset$objective.function<-build.general.objective.function( aset, aset$ff.vol, aset$ff.cost, tol=obj.tol)
+	else
+		aset$objective.function<-objective.function
 
 	# Mark this as a known structure
 	class(aset)<-"highway.assignment.set"
@@ -204,8 +172,37 @@ new.assignment.set <- function( network,classes,cost.volume.type=c("vector","mat
 	return(aset)
 }
 
+# Convenience function for validating assignment classes
+validate.assignment.classes <- function( aset, classes ) {
+	bad.names <-names(classes)!=sapply(classes,function(x){ ifelse(is.null(x$name),"", x$name)})
+	if ( any(bad.names) ) {
+		warning("Assignment set classes do not have consistent names:\n",paste(names(classes)[bad.names],collapse=", "))
+		return(FALSE)
+	}
+	# note that the following line works, even if aset doesn't have any classes yet (is.null(aset$classes))
+	missing.cost.function<-sapply( c(aset$classes,classes), function(x) { if (is.null(x$cost.function)) TRUE; FALSE } )
+	if ( !all(missing.cost.function) && any(missing.cost.function) ) {
+		message("Assignment set classes have incomplete class functions:",
+			paste(names(classes)[missing.cost.function],collapse=", "))
+		return(FALSE)
+	}
+	missing.demand<-sapply( classes, function(x) { if (is.null(x$demand)) TRUE; FALSE } )
+	if ( any(missing.demand) ) {
+		warning("Assignment set classes are missing required demand matrix:",
+			paste(names(classes)[missing.demand],collapse=", "))
+		return(FALSE)
+	}
+	missing.network.set<-sapply( classes, function(x) { if (is.null(x$network.set)||class(x$network.set)!="highway.network.set") TRUE; FALSE } )
+	if ( any(missing.network.set) ) {
+		warning("Assignment set classes are missing suitable network set:",
+			paste(names(classes)[missing.demand],collapse=", "))
+		return(FALSE)
+	}
+	return(TRUE)
+}
+
 # The following convenience functions make it easy to build a set of assignment classes, once
-# you know the parameters for each class.
+# you know the parameters (network, demand, link and penalty subsets, and cost.function) for each class.
 # Example:
 #     class.list <- vector("list")
 #     aclass <- make.assignment.class(network,"Class.1",demand.1,links.1,penalty.subset.1,cost.function.1)
@@ -218,31 +215,193 @@ make.assignment.class <- function( network, name, demand, link.subset=TRUE, pena
 	aclass<-list( name=name,demand=demand )
 	aclass$network.set<-.build.network.set(network,link.subset,penalty.subset)
 	if (!is.null(cost.function)) aclass$cost.function<-cost.function
+	class(aclass)<-"highway.assignment.class"
 	return(aclass)
 }
 
 # Create a named list entry with the same name as the class
 # Do not permit a new class to overwrite an existing class with the same name
 # There are easy ways to remove the existing name first (e.g. class.list[[replace.name]]<-NULL)
-add.assignment.class <- function( classes, aclass ) {
+add.assignment.class <- function( classes, aclass ) UseMethod("add.assignment.class",classes)
+
+add.assignment.class.default <- function( classes, aclass )
+	stop("Can only add assignment classes to a list of classes or to an assignment.set")
+
+add.assignment.class.highway.assignment.set <- function( classes, aclass ) {
+	aset <- classes
+	if ( class(aclass)!="highway.assignment.class" )
+		stop("Must use make.assignment.class and add.assignment.classes to build an assignment class")
+	if ( validate.assignment.classes(aset,added.class ) ) {
+		if ( all(match(aclass$name,names(aset$classes),nomatch=0)==0) ) {
+			added.class <- list(aclass)
+			names(added.class) <- aclass$name
+			aset$classes<-c(aset$classes,added.class)
+		} else {
+			warning("Cannot overwrite existing class ",aclass$name)
+		}
+	}
+	return(aset)
+}
+
+add.assignment.class.list <- function( classes, aclass ) {
 	if ( all(match(aclass$name,names(classes),nomatch=0)==0) ) {
 		classes[[aclass$name]]<-aclass
 	} else {
-		warning("Cannot overwrite existing class",aclass$name)
+		warning("Cannot overwrite existing class ",aclass$name)
 	}
 	return(classes)
 }
 
+# Function to update an entire assignment class... Can't imagine why, but here it is!
+hwy.update.class <- function( aset, name, aclass ) {
+	if ( is.null(name) || is.null(class) )
+		stop("Cannot update assignment class unless name and new data are provided")
+	if ( class(aclass) != "highway.assignment.class" )
+		stop("Use make.assignment.class to construct the new class")
+	if ( is.null(aset[[name]]) )
+		message("Adding assignment class named ",name)
+	aset$classes[[name]] <- aclass
+}
+
+# Function to update the demand for an assignment class once it's in the assignment set
+hwy.update.demand <- function( aset, name, demand ) {
+	if ( is.null(aset[[name]]) )
+		warning("No class named ",name)
+	else if (!is.null(demand))
+		aset[[name]]$demand<-demand
+	else
+		warning("No new demand: assignment set was unchanged")
+	return(aset)
+}
+
+# Function to update the penalty values for an assignment class
+hwy.update.penalties <- function( aset, penalties ) {
+	if ( is.null(aset$penalties) )
+		stop("Number of penalties must be defined when network is built; only the values may change.")
+	else if (!is.null(penalties) && length(penalties)==length(aset$penalties))
+		aset$penalties<-penalties
+	else
+		stop(sprintf(gettext("Must provide %d penalties"),length(aset$penalties)))
+	return(aset)
+}
+
 # Cost functions
+
 # Here is a helper to make a BPR-type function, using some static data
 # This particular version wants a vector of volumes, which is suitable
 # if we need a vector-based cost function
-build.BPR.function <- function(cost.data) {
+build.BPR.cost.function <- function(cost.data) {
 	# cost.data is either an environment, a list, or a data.frame
 	# All-cap elements must be provided in cost.data
 	# (either as scalars or as vectors that supply a value for each link in the network)
-	return( with(cost.data, function(volume){TIME * ( 1 + (ALPHA/(CAPACITY^BETA)) * ( volume^BETA ) )} ) )
+	FACTOR <- with(cost.data,ALPHA/(CAPACITY^BETA))
+	return( with(cost.data, function(volume,...){TIME * ( 1 + FACTOR * ( volume^BETA ) )} ) )
 }
+
+# Objective Functions
+build.BPR.objective.function <- function(cost.data) {
+	# cost.data is either an environment, a list, or a data.frame
+	# All-cap elements must be provided in cost.data
+	# (either as scalars or as vectors that supply a value for each link in the network)
+	BETA.OBJ<-with(cost.data,BETA+1)
+	FACTOR <- with(cost.data,ALPHA/(CAPACITY^BETA.OBJ))
+	with(cost.data, function(volume) { sum(volume * (TIME * ( 1 + FACTOR * ( volume^BETA ) ) ) ) } )
+}	
+
+# "correct" objective function when there is no easy analytic form
+# Analytic form is to be preferred since it may be much faster
+build.general.objective.function<-function(aset, ff.vol, ff.cost, tol=1e-4, max.depth=14 ) {
+	cf <- function(volume) aset$cost.function(volume,aset)
+	function(volume) cost.integrator(cf, ff.vol, ff.cost, volume, cf(volume), tol, max.depth)
+}
+
+# From Wikipedia:
+#
+# Here is an implementation of the adaptive Simpson's method in C99 that avoids
+# redundant evaluations of f and quadrature computations, but also suffers from
+# memory runaway.  Suggested improvement would be to use a for loop in
+# adaptiveSimpsonsAux:
+#
+# #include <math.h>  // include file for fabs and sin
+# #include <stdio.h> // include file for printf
+#  
+# //
+# // Recursive auxiliary function for adaptiveSimpsons() function below
+# //                                                                                                 
+# double adaptiveSimpsonsAux(double (*f)(double), double a, double b, double epsilon,                 
+#                          double S, double fa, double fb, double fc, int bottom) {                 
+#   double c = (a + b)/2, h = b - a;                                                                  
+#   double d = (a + c)/2, e = (c + b)/2;                                                              
+#   double fd = f(d), fe = f(e);                                                                      
+#   double Sleft = (h/12)*(fa + 4*fd + fc);                                                           
+#   double Sright = (h/12)*(fc + 4*fe + fb);                                                          
+#   double S2 = Sleft + Sright;                                                                       
+#   if (bottom <= 0 || fabs(S2 - S) <= 15*epsilon)                                                    
+#     return S2 + (S2 - S)/15;                                                                        
+#   return adaptiveSimpsonsAux(f, a, c, epsilon/2, Sleft,  fa, fc, fd, bottom-1) +                    
+#          adaptiveSimpsonsAux(f, c, b, epsilon/2, Sright, fc, fb, fe, bottom-1);                     
+# }         
+#  
+# //
+# // Adaptive Simpson's Rule
+# //
+# double adaptiveSimpsons(double (*f)(double),   // ptr to function
+#                            double a, double b,  // interval [a,b]
+#                            double epsilon,  // error tolerance
+#                            int maxRecursionDepth) {   // recursion cap        
+#   double c = (a + b)/2, h = b - a;                                                                  
+#   double fa = f(a), fb = f(b), fc = f(c);                                                           
+#   double S = (h/6)*(fa + 4*fc + fb);                                                                
+#   return adaptiveSimpsonsAux(f, a, b, epsilon, S, fa, fb, fc, maxRecursionDepth);                   
+# }                                                                                                   
+#  
+#  
+# int main(){
+#  double I = adaptiveSimpsons(sin, 0, 1, 0.000000001, 10); // compute integral of sin(x)
+#                                                           // from 0 to 1 and store it in 
+#                                                           // the new variable I
+#  printf("I = %lf\n",I); // print the result
+#  return 0;
+# }
+#
+# The "runaway memory" problem could potentially be an issue in the R code, but the
+# Wikipedia-suggested solution of unrolling the recursion into a loop is overkill if the cost
+# function is well-behaved.  Time and experience will tell if we need to revisit this
+
+# Note: cost integrator can handle the special requirement that the volume and cost parameters be
+# vectors (and that the integral of the whole be the sum of the integrals of each element from "free
+# flow" volume (0) to the corresponding element in "congested").  This function should also handle
+# everything happily even if ff.vol and cong.vol are data.frames or matrices.
+
+# The standard R 'integrate' function can't do any of that...
+
+cost.integrator <- function( cost.function, ff.vol, ff.cost, cong.vol, cong.cost, tol=1e-8, max.depth=14 ) {
+	# Integrate the cost function using adaptive quadrature with inside-interval tolerance testing
+	ivl      <- (cong.vol-ff.vol)/2
+	mid.vol  <- ff.vol+ivl
+	mid.cost <- cost.function(mid.vol)
+	result   <- (ivl/3)*(ff.cost+4*mid.cost+cong.cost)
+	inner.integrator( cost.function, ff.vol, ff.cost, mid.vol, mid.cost, cong.vol, cong.cost, result, max.depth, tol )
+}
+
+inner.integrator <- function( cost.function, ff.vol,ff.cost,mid.vol,mid.cost,cong.vol,cong.cost,result,depth, tol) {
+		ivl         <- (cong.vol-ff.vol)/4
+		left.vol    <- ff.vol + ivl
+		left.cost   <- cost.function(left.vol)
+		right.vol   <- cong.vol - ivl
+		right.cost  <- cost.function(right.vol)
+		h.6         <- ivl/3
+		result.left <- sum(h.6*(ff.cost+4*left.cost+mid.cost))
+		result.right<- sum(h.6*(mid.cost+4*right.cost+cong.cost))
+		result.2    <- result.left + result.right
+		if ( depth<=0 || (abs(result.2-result)<=(tol*15)) ) { # if splitting doesn't improve result, return best guess
+			result  <- result.2 + (result.2-result)/15
+		} else {  # otherwise, process each half recursively seeking a better fit
+			result <- Recall(cost.function,ff.vol,ff.cost,left.vol,left.cost,mid.vol,mid.cost,result.left,depth-1,tol/2)+
+					  Recall(cost.function,mid.vol,mid.cost,right.vol,right.cost,cong.vol,cong.cost,result.right,depth-1,tol/2)
+		}
+		result
+	}
 
 # Intercept Set, describes select link processing
 
@@ -264,4 +423,3 @@ new.intercept.set <- function( links, filter.od=NULL ) {
 	attr(iset,"class")<-"intercept.set"
 	return(iset)
 }
-

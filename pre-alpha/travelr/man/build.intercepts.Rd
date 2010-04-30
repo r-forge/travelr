@@ -1,13 +1,11 @@
-\name{build.intercepts}
+\name{build.intercept.function}
 \alias{build.intercepts}
 \alias{build.intercept.function}
 \title{
 Perform 'Select Link' Analysis for Highway Network
 }
 \description{
-
 Define intercept function for select link analysis
-
 }
 \usage{
 build.intercept.function(iset,aset)

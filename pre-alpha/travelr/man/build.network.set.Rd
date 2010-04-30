@@ -2,29 +2,30 @@
 \alias{build.network.set}
 \alias{.build.network.set}
 \title{
-Construct internal structures for shortest path evaluation of highway network
+Construct internal structures for shortest path evaluation
 }
 \description{
-Build suitable efficient internal structures for computing shortest
-paths on a highway network.
+Build suitable internal structures for computing shortest paths on a highway network.
 }
 \usage{
 .build.network.set(network, link.subset, pen.subset=NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{network}{
-%%     ~~Describe \code{network} here~~
+	A highway network
 }
   \item{link.subset}{
-%%     ~~Describe \code{link.subset} here~~
+	A vector index indicating which network links are active for this class
 }
   \item{pen.subset}{
-%%     ~~Describe \code{pen.subset} here~~
+	A vector index indicating which penalty values are active for this class
 }
 }
 \details{
-Details yet to come.
+This function is usually only called from within \code{\link{new.assignment.set}}.
+The \code{link.subset} and \code{pen.subset} indexes will be those specified for
+each assignment class, with a default automatically supplied when the assignment
+class is created that will select \emph{all} links but \emph{no} penalties. 
 }
 \value{
 Returns a version of the network suitable for use in building shortest paths efficiently.

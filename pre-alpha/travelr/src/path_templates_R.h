@@ -22,8 +22,8 @@
 
 #ifdef DEBUG_TRAVELR
 #include <time.h>
-#include <Rinternals.h>
 #endif
+#include <Rinternals.h>
 
 // Supporting operations for PathWalker data types
 

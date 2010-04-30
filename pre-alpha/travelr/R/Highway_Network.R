@@ -87,7 +87,7 @@ as.highway.net <- function( links, numNodes, numZones, Penalty=NULL, nodes=NULL,
 		else warning("If Penalty table is provided for highway network, you must specify Penalty.fields as well")
 	} else {
 		netwk$Penalty<-data.frame(Thru=as.integer(-1),From=as.integer(-1),To=as.integer(-1),.PenaltyID=as.integer(-1),Penalty.value=as.numeric(-1))
-		netwk$Penalty.fields<-c(Thru="Thru",From="From",To="To",Penalty.value="Penalty")
+		netwk$Penalty.fields<-c(Thru="Thru",From="From",To="To",Penalty.value="Penalty.value")
 	}
 	if (is.null(firstThruNode)) netwk$firstThruNode<-as.integer(netwk$numZones+1)
 	else netwk$firstThruNode<-as.integer(firstThruNode)

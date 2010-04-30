@@ -21,6 +21,11 @@ rmse<-function(v1,v2) {
 	e<-v1-v2;
 	sqrt(sum(e^2)/(length(e)))
 }
+
+# Gamma Function - For building gravity models with ipf
+
+hwy.gamma.function<-function(x,b,c)	(x^b)*exp(x*c)
+
 # A function to perform iterative proportional fitting on an array with
 # 2 (or more?) dimensions -- how would that work for more than 2?
 

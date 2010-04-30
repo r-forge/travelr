@@ -18,24 +18,36 @@ export(as.highway.net)
 S3method(summary,highway.net)
 S3method(print,highway.net)
 S3method(print,sum.highway.net)
+export(tntp.network)
+export(tntp.od)
 
 # Assignment Set operation functions
-export(free.flow)
 export(build.paths)
 export(load.paths)
 export(build.and.load.paths)
-export(intercept.paths)
-export(skim.paths)
 
-# Assignment Set constrution functions
-export(cost.integrator)
-export(build.serious.objective.function)
-export(build.easy.objective.function)
+# Assignment Set construction functions
 export(new.assignment.set)
 export(make.assignment.class)
 export(add.assignment.class)
-export(build.BPR.function)
+S3method(add.assignment.class,default)
+S3method(add.assignment.class,list)
+S3method(add.assignment.class,highway.assignment.set)
+export(hwy.update.class)
+export(hwy.update.penalties)
+export(hwy.update.demand)
+
+# Skims and intercepts
+export(skim.paths)
 export(new.intercept.set)
+export(intercept.paths)
+
+# Cost function management
+export(free.flow)
+export(build.BPR.cost.function)
+export(build.BPR.objective.function)
+export(cost.integrator)
+export(build.general.objective.function)
 
 # High-level algorithms
 export(highway.assign)
@@ -54,6 +66,7 @@ export(build.lambda.function)
 export(build.lambda.search)
 
 # Utility functions
+export(hwy.gamma.function)
 export(rmse)
 export(ipf)
 S3method(print,iterative.fit)
@@ -62,6 +75,7 @@ S3method(print,iterative.fit)
 export(.build.network.set)
 export(.shortest.paths)
 export(.load.paths)
+export(.build.and.load.paths)
 export(.skim.paths)
 export(.intercept.paths)
 export(.walk.paths)

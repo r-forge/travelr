@@ -62,19 +62,20 @@ highway.assign <- function( aset, method=c("AON","MSA","Frank.Wolfe","ParTan"), 
 # You'll get the value explicitly set, or the local default in the algorithm, or the global default
 # from the control.defaults list
 # Note that some algorithms like MSA may provide alternate "global" defaults
-1
+
 control.defaults <- list(
 		intercept=NULL,
-		min.rgap        = 1e-4,               # stop if relative.gap goes below this value
-		max.iter        = 100,				 # for MSA, it's overridden to 4 and other stopping conditions are ignored
+		min.relative.gap = 1e-4,               # stop if relative.gap goes below this value
+		max.iter         = 100,				 # for MSA, it's overridden to 4 and other stopping conditions are ignored
 										     # set max.iter=0 for open-ended running
-		max.elapsed     = 3600,				 # number of seconds - set to zero to run forever
-		opt.tol         = .Machine$double.eps^0.5, # tolerance for internal line searches
-		verbose         = 1,				 # depending on the algorithm, bigger numbers will produce more tracking output
-		log             = FALSE				 # if true, return 'log' attribute (a data.frame) with assignment result details
+		max.elapsed      = 3600,				 # number of seconds - set to zero to run forever
+		opt.tol          = .Machine$double.eps^0.5, # tolerance for internal line searches
+		verbose          = 1,				 # depending on the algorithm, bigger numbers will produce more tracking output
+		log              = FALSE				 # if true, return 'log' attribute (a data.frame) with assignment result details
 	)
 
 parse.control<-function( control, control.element, default.value=NULL ) {
+	cat("Parsing",control.element,"\n")
 	element<-control[[control.element]]
 	if ( !is.null(element) ) {
 		result<-element
@@ -94,30 +95,33 @@ parse.control<-function( control, control.element, default.value=NULL ) {
 # at the 16th Annual International EMME/2 Users’ Group Conference, Albuquerque, NM,
 # March 18-20, 2002.
 build.equil.stats.function <- function( objective.function, flow=0 ) {
-	avg.excess.cost.func <-  ifelse( all.equal(flow,0), function(gap)NULL, function(gap)gap/flow )
+
+	if ( isTRUE(all.equal(flow,0)) ) { avg.excess.cost.func <- function(gap)NULL }
+	else                             { avg.excess.cost.func <- function(gap)gap/flow }
+
 	start.time=proc.time()["elapsed"]
-	run.time <- function() as.numeric(proc.time["elapsed"]-start.time)
+	run.time <- function() as.numeric(proc.time()["elapsed"]-start.time)
 
 	# add additional values to the result list when calling this function
 	# by providing named numeric scalar values in the ... parameter
-	function( iter, cost, vol, diff, best.lower.bound=as.numeric(NA), ... ) {
+	function( iter, cost, vol, diff, best.lower.bound=as.numeric(NA), extras=list() ) {
 		# vol  is the vector of Equilibrium Path Volumes
 		# diff is the vector of Shortest Path Volumes - Equilibrium Path Volumes
 		# cost is the vector of link costs given current equilibrium path volumes
 		iter             <-  iter
 		elapsed          <-  run.time()
-		objective.value  <-  objective.function(cost,vol)
+		objective.value  <-  objective.function(vol)
 		gap              <-  -sum(cost*diff)
 		lower.bound      <-  objective.value-gap
 		best.lower.bound <-  max( best.lower.bound, lower.bound, na.rm=TRUE )
-		relative.gap     <-  -gap/abs(best.lower.bound)
+		relative.gap     <-  (objective.value-best.lower.bound)/abs(best.lower.bound)
 		avg.excess.cost  <-  avg.excess.cost.func(gap)
 
 		# The return form here produces a named vector of numeric values
-		return ( c(iter=iter,elapsed=elapsed,
-				   objective=objective.value,gap=gap,relative.gap=relative.gap,
-				   lower.bound=lower.bound,best.lower.bound=best.lower.bound,
-				   avg.excess.cost=avg.excess.cost,...) )
+		return ( c(list(iter=iter,elapsed=elapsed,
+					    objective=objective.value,gap=gap,relative.gap=relative.gap,
+					    lower.bound=lower.bound,best.lower.bound=best.lower.bound,
+					    avg.excess.cost=avg.excess.cost),extras) )
 	}
 }
 
@@ -126,15 +130,20 @@ build.equil.stats.function <- function( objective.function, flow=0 ) {
 # of "min." or "max." with the rest of their name matching the equilibrium statistic names
 build.convergence.test<-function( control, test=c("min.relative.gap","max.iter","max.elapsed") ) {
 	# pre-compute a setup for convergence testing
-	test.min.names <- test[which(grep("^min\\.",test))]
-	test.max.names <- test[which(grep("^max\\.",test))]
+	test.min.names <- test[grep("^min\\.",test)]
+	test.max.names <- test[grep("^max\\.",test)]
 	min.names<-gsub("^min\\.","",test.min.names)
 	max.names<-gsub("^max\\.","",test.max.names)
-	test.min<-unlist(control[test.min.names])
-	test.max<-unlist(control[test.max.names])
+	test.min <- numeric(0)
+	for ( i in test.min.names ) test.min <- c(test.min,parse.control(control,i))
+	test.max <- numeric(0)
+	for ( i in test.max.names ) test.max <- c(test.max,parse.control(control,i))
+ 	cat("Convergence Test::\n")
+ 	cat("Min:",paste(test.min.names,sep=","),"Max:",paste(test.max.names,sep=","),"\n")
+ 	cat( "Min:",paste(test.min,collapse=","),"Max:",paste(test.max,collapse=","), "\n")
 	function(results) {
-		all( results[min.names] < test.min ) &&
-		all( results[max.names] > test.max )
+		any( unlist(results[min.names]) <= test.min ) ||
+		any( unlist(results[max.names]) >= test.max )
 	}
 }
 
@@ -143,73 +152,185 @@ build.convergence.test<-function( control, test=c("min.relative.gap","max.iter",
 # Not much error checking on built-in functions, since they are hidden in the namespace
 #  and should only be called through the highway.assignment driver function, which
 #  should do more checking
+
+build.log.function <- function(control) {
+	log <- parse.control(control,"log")
+	if ( log ) {
+		log.function<-function(new.results,log,verbose) {
+			if ( is.data.frame(log) ) {
+				nr <- as.data.frame(new.results)
+				cat( paste(format(nr[1,]),collapse=", "), "\n" )
+				return( rbind(log,nr) )
+			} else {
+				cat( paste(names(new.results),collapse=", "),"\n")
+				return( as.data.frame(new.results) )
+			}
+		}
+	} else
+		log.function<-function(new.results,log,verbose) FALSE
+	return(log.function)
+}
+
+# All-Or-Nothing
 .highway.assignment.AON <- function(aset,control) {
 	verbose <- parse.control(control,"verbose")
 	if ( verbose>0 )
-		cat("All-or-Nothing (AON) highway assignment\n")
+		message("All-or-Nothing (AON) highway assignment\n")
 	assign.results<-build.and.load.paths(aset,aset$ff.cost)
-	cat("Assignment results in AON:\n")
 	intercept<-(build.intercept.function(iset<-parse.control(control,"intercept"),aset))(assign.results$paths)
 	return(list(aset=aset,costs=aset$ff.cost,
 				paths=assign.results$paths,volumes=assign.results$volumes,
 				iset=iset,intercept=intercept))
 }
 
-# Built-In Assignment Methods
+# Multiple Successive Averages
 .highway.assignment.MSA <- function(aset,control) {
-
-	log <- parse.control(control,"log")
-	if ( log ) {
-		log.function<-function(new.results,log,...) {
-			if ( is.data.frame(log) )
-				return( rbind(log,as.data.frame(new.results)) )
-			else
-				return( new.results )
-		}
-	} else
-		log.function<-function(new.results,log,...) FALSE
-
+	log.function<-build.log.function(control)
 	verbose <- parse.control(control,"verbose")
 	if ( verbose>0 )
-		cat("Multiple Successive Averages (MSA) highway assignment\n")
+		message("Multiple Successive Averages (MSA) highway assignment\n")
 	max.iter <- parse.control(control,"max.iter",4)
 	if (attr(max.iter,"default")) {
-		cat(sprintf(gettext("Maximum iterations for MSA assignment set to default (%d)\n"),max.iter))
+		message(sprintf(gettext("Maximum iterations for MSA assignment set to default (%d)\n"),max.iter))
 	} else if ( verbose>0 ) {
-		cat(sprintf("Maximum iterations for MSA assignment set to %d\n"),max.iter)
+		message(sprintf("Maximum iterations for MSA assignment set to %d\n"),max.iter)
 	}
 	control$max.iter<-max.iter
 
 	# Construct helper values and functions
-	flow<-sum(sapply(aset$aclasses,function(ac)sum(ac$demand),SIMPLIFY=TRUE,USE.NAMES=FALSE))
+	flow<-sum(sapply(aset$classes,function(ac)sum(ac$demand),USE.NAMES=FALSE))
 	build.intercepts<-build.intercept.function(iset<-parse.control(control,"intercept"),aset)
 	converged<-build.convergence.test(control,c("max.iter"))
 	equil.stats<-build.equil.stats.function(aset$objective.function, flow)
 
 	iter<-1
-	vol  <- aset$ff.vol
 	cost <- aset$ff.cost
+	load <- build.and.load.paths(aset,cost)
+	vol  <- load$volumes
+	cost <- aset$cost.function(vol,aset)
 	intercept<-NULL
 	best.lower.bound<-as.numeric(NA)
 	while (TRUE) {
 		load<-build.and.load.paths(aset,cost)
 		vol.new<-load$volumes
 		vol.diff <- vol.new-vol
-		new.results <- equil.stats(iter,cost,vol,vol.diff,best.lower.bound)
-		best.lower.bound<-new.results$best.lower.bound
+# 		cat(iter,"Sum cost:",sum(aset$cost.function(vol,aset)),"\n")
+# 		cat(iter,"Sum shortest-path cost:",sum(aset$cost.function(vol.new,aset)),"\n")
+		new.results <- equil.stats(iter,cost,vol,vol.diff,best.lower.bound,extras=list(cost=cost))
+		best.lower.bound<-new.results[["best.lower.bound"]]
 
 		iter<-iter+1
 		iter.weight <- 1/(iter+1)
 		vol <- weighted.update.diff( iter.weight, vol, vol.diff )
 		intercept<- weighted.update.intercept( iter.weight, intercept, build.intercepts(load$paths) )
-		cost<-aset$cost.function(vol)
+		cost<-aset$cost.function(vol,aset)
 
-		# Still not a happy logging process...
-		log <- log.function( new.results, log )
-		if ( nrow(log)>0 && verbose>1 )
-			print(log,nrow(log))         # TODO: a prettier job on this output
+		log <- log.function( new.results, log, verbose )
 		if ( converged(new.results) )
 			break
+	}
+	return(list(aset=aset,costs=cost,paths=load$paths,volumes=load$volumes,iset=iset,intercept=intercept,results=new.results,log=log))
+}
+
+# Frank.Wolfe Algorithm
+.highway.assignment.Frank.Wolfe <- function(aset,control) {
+	log.function<-build.log.function(control)
+	verbose <- parse.control(control,"verbose")
+	if ( verbose>0 )
+		message("Frank-Wolfe highway assignment\n")
+
+	# Construct helper values and functions
+	flow<-sum(sapply(aset$classes,function(ac)sum(ac$demand),USE.NAMES=FALSE))
+	build.intercepts<-build.intercept.function(iset<-parse.control(control,"intercept"),aset)
+	converged<-build.convergence.test(control,c("min.relative.gap","max.iter","max.elapsed"))
+	equil.stats<-build.equil.stats.function(aset$objective.function, flow)
+
+	iter<-1
+	cost <- aset$ff.cost
+	load <- build.and.load.paths(aset,cost)
+	vol  <- load$volumes
+	intercept<-NULL
+	best.lower.bound<-as.numeric(NA)
+
+	lambda.func <- build.lambda.function(aset)
+	lambda.search <- build.lambda.search( lambda.func )
+
+	while (TRUE) {
+		cost <- aset$cost.function(vol,aset)
+		load<-build.and.load.paths(aset,cost)
+		vol.new<-load$volumes
+		vol.diff <- vol.new-vol
+		lambda <- lambda.search(vol,vol.diff)$lambda
+
+		new.results <- equil.stats(iter,cost,vol,vol.diff,best.lower.bound,extras=list(lambda=lambda))
+		best.lower.bound<-new.results[["best.lower.bound"]]
+
+		vol <- weighted.update.diff( lambda, vol, vol.diff )
+		intercept<- weighted.update.intercept( lambda, intercept, build.intercepts(load$paths) )
+
+		log <- log.function( new.results, log, verbose )
+		if ( converged(new.results) )
+			break
+		iter<-iter+1
+	}
+	return(list(aset=aset,costs=cost,paths=load$paths,volumes=load$volumes,iset=iset,intercept=intercept,results=new.results,log=log))
+}
+
+# ParTan (Parallel-Tangent) Algorithm
+.highway.assignment.ParTan <- function(aset,control) {
+	log.function<-build.log.function(control)
+	verbose <- parse.control(control,"verbose")
+	if ( verbose>0 )
+		message("ParTan highway assignment\n")
+
+	# Construct helper values and functions
+	flow<-sum(sapply(aset$classes,function(ac)sum(ac$demand),USE.NAMES=FALSE))
+	build.intercepts<-build.intercept.function(iset<-parse.control(control,"intercept"),aset)
+	converged<-build.convergence.test(control,c("min.relative.gap","max.iter","max.elapsed"))
+	equil.stats<-build.equil.stats.function(aset$objective.function, flow)
+
+	iter<-1
+	cost <- aset$ff.cost
+	load <- build.and.load.paths(aset,cost)
+	vol  <- load$volumes
+	last.intercept<-intercept<-NULL
+	best.lower.bound<-as.numeric(NA)
+
+	lambda.func <- build.lambda.function(aset)
+	lambda.search <- build.lambda.search( lambda.func )
+
+	while (TRUE) {
+		cost <- aset$cost.function(vol,aset)
+		load<-build.and.load.paths(aset,cost)
+		intercept.new <- build.intercepts(load$paths)
+
+		vol.new<-load$volumes
+		vol.diff <- vol.new-vol
+		lambda <- lambda.search(vol,vol.diff)$lambda
+		vol.new <- weighted.update.diff( lambda, vol, vol.diff )
+		intercept<- weighted.update.intercept( lambda, intercept, intercept.new )
+
+		if ( exists("vol.last") ) {
+			vol.diff.partan <- vol.new - vol.last
+			alpha <- lambda.search(vol.last,vol.diff.partan,interval=c(0,5))
+			vol.new <- weighted.update.diff( alpha, vol.last, vol.diff )
+			intercept.new <- weighted.update.intercept( alpha, intercept.last, intercept.new )
+		} else {
+			alpha=0.0
+		}
+		
+		new.results <- equil.stats(iter,cost,vol,vol.diff,best.lower.bound,extras=list(lambda=lambda,alpha=alpha))
+		best.lower.bound<-new.results[["best.lower.bound"]]
+
+		vol.last <- vol
+		intercept.last <- intercept
+		vol <- vol.new
+		intercept <- intercept.new
+
+		log <- log.function( new.results, log, verbose )
+		if ( converged(new.results) )
+			break
+		iter<-iter+1
 	}
 	return(list(aset=aset,costs=cost,paths=load$paths,volumes=load$volumes,iset=iset,intercept=intercept,results=new.results,log=log))
 }
@@ -220,7 +341,6 @@ build.intercept.function <- function( iset, aset ) {
 	else {
 		classes <- aset$classes   # list of matrices, one for each assignment class
 		demand <- lapply(classes,function(x) x$demand)
-		cat("Demand while building intercept function:\n")
 		links <- iset$links     # vector of links of interest
 		f <- function(paths) {
 			od <- intercept.paths(paths,links)		# each OD here is just 0/1
@@ -228,7 +348,7 @@ build.intercept.function <- function( iset, aset ) {
 						  od,demand,
 						  USE.NAMES=TRUE, SIMPLIFY=FALSE )
 			volumes <- mapply(.load.paths,
-						  paths,demand,
+						  paths,od,
 						  USE.NAMES=TRUE, SIMPLIFY=FALSE )
 			return( list(od=od,volumes=volumes) )	# OD is list of matrices, per assignment class
 													# volumes is list of volumes, per assignment class
@@ -269,12 +389,12 @@ weighted.update.intercept<-function( weight, base, new ) {
 #      updated.objective <- search.result$objective
 # Look at the Frank-Wolfe or ParTan algorithms to see applications
 
-build.lambda.function<-function(cost.function,objective.function)
-	function( lambda, vol, diff ) objective.function(cost.function(vol+lambda*diff),diff)
+build.lambda.function<-function(aset)
+	function( lambda, vol, diff ) sum(aset$cost.function(vol+lambda*diff,aset)*diff)
 
 build.lambda.search<-function(lambda.func,opt.tol=.Machine$double.eps^0.25) {
-	function(vol,diff) {
-		search.result<-uniroot(lambda.func,interval=c(0,1),tol=opt.tol,vol=vol,diff=diff)
+	function(vol,diff,interval=c(0,1)) {
+		search.result<-uniroot(lambda.func,interval=interval,tol=opt.tol,vol=vol,diff=diff)
 		return(list(lambda=search.result$root,objective=search.result$f.root))
 	}
 }

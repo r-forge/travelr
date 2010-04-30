@@ -8,19 +8,27 @@ stopifnot(exists("SiouxFalls.od"))
 
 # Construct cost function based on no-toll TNTP cost equation
 # Build assignment set ("single"/default)
-cost.sf<-build.BPR.function( with(SiouxFalls.net$Links,
-                                 data.frame( TIME=FFTime,
-											 CAPACITY=Capacity,
-											 ALPHA=B,
-											 BETA=Power)) )
-aclass.sf <- make.assignment.class(SiouxFalls.net,"All",SiouxFalls.od,cost.function=cost.sf)
+cost.sf<-build.BPR.cost.function( with(SiouxFalls.net$Links,
+                                  data.frame( TIME=FFTime,
+											  CAPACITY=Capacity,
+											  ALPHA=B,
+											  BETA=Power)) )
+
+obj.sf<-build.BPR.objective.function( with(SiouxFalls.net$Links,
+                                            data.frame( TIME=FFTime,
+											  CAPACITY=Capacity,
+											  ALPHA=B,
+											  BETA=Power)) )
+
+aclass.sf <- make.assignment.class(SiouxFalls.net,"All",SiouxFalls.od)
 classes.sf<-vector("list",0)
 classes.sf<-add.assignment.class(classes.sf,aclass.sf)
 cat(paste(rep("=",80),collapse=""),"\n")
 cat("Structure of Sioux Falls Assignment Class (aclass.sf)\n")
 str(aclass.sf)
 cat("Building 'single' assignment set.\n")
-aset.sf <- new.assignment.set(SiouxFalls.net, classes.sf, assignment.type="single")
+aset.sf <- new.assignment.set(SiouxFalls.net, classes.sf, assignment.type="single",
+                              cost.function=cost.sf,objective.function=obj.sf)
 cat(paste(rep("=",80),collapse=""),"\n")
 cat("Structure of Sioux Falls Assignment Set (aset.sf)")
 str(aset.sf)

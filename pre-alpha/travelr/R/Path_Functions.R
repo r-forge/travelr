@@ -53,11 +53,9 @@
 							 Child=.zero.base(penalties[[Penalty.fields["To"]]]),
 							 Turn=.zero.base(penalties$.PenaltyID)),
 						   ncol=4,nrow=nrow(penalties) )
-			penalty.values<-network$Penalty[[network$Penalty.fields["Penalty.value"]]]
 	}
 	if (is.null(turns)) { # no turn penalty subset supplied
 		turns<-matrix( -1, ncol=4, nrow=1 ) # dummy penalty table for merge
-		penalty.values<-NULL
 	}
 	dimnames(turns)<-list(NULL,c("Node","Parent","Child","Turn"))
 # 	cat("turns:\n")
@@ -82,7 +80,7 @@
 	storage.mode(turns)<-"integer"
 
 	# construct return value
-	net.set<-list( edges=edges, turns=turns, offsets=offsets, penalty.values=penalty.values )
+	net.set<-list( edges=edges, turns=turns, offsets=offsets )
 	attr(net.set$edges,"numNodes")<-network$numNodes
 	attr(net.set$edges,"numZones")<-network$numZones
 	attr(net.set$edges,"numLinks")<-network$numLinks
@@ -92,17 +90,17 @@
 	return( net.set )
 }
 
-.shortest.paths <- function(network.set,costs) {
+.shortest.paths <- function(network.set,costs,penalties=NULL) {
 	paths<- .Call("shortest_paths",
 				  network.set$edges,network.set$offsets,network.set$turns,
-				  costs,network.set$penalty.values) # penalty.values may be NULL
+				  costs,penalties) # penalties may be NULL
 	return(paths)
 }
 
-.build.and.load.paths <- function(network.set,costs,demand) {
+.build.and.load.paths <- function(network.set,costs,demand,penalties=NULL) {
 	loaded.paths <- .Call("build_and_load_paths",
 				  network.set$edges,network.set$offsets,network.set$turns,
-				  costs,network.set$penalty.values,demand) # penalty.values may be NULL
+				  costs,penalties,demand) # penalties may be NULL
 	return(list(paths=loaded.paths$paths,volumes=loaded.paths$volumes))
 }
 
