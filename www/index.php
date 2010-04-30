@@ -49,17 +49,22 @@ echo $contents; } ?>
 <p> The TravelR project's first package, not suprisingly named "<strong>travelr</strong>", is in "pre-alpha" state (the code is not quite
    complete, what is there sort of works, but what works and what doesn't is changing daily and sometimes hourly).
    A very preliminary version of the package is expected to be surreptitiously released some time in May 2010, and
-   announced to a close circle of co-conspiratoRs.  Subscribe to the travelr-discussion list, or email the lead
+   announced to a close circle of co-conspiratoRs.  Subscribe to the travelr-announce list, or email the lead
    developer  through the <a href="http://<?php echo $domain; ?>/projects/<?php echo $group_name; ?>/">project page</a>
    if you would like to join the inner circle.</p>
 
-<h3>History and Motivation</h3>
+<h3>History, Motivation and Philosophy</h3>
 <p> Some travel model developers and users have been using R very happily for years, but the ability to do a complete
    model in R has eluded us since there hasn't been a good way to do
    <a href="http://en.wikipedia.org/wiki/Traffic_assignment">highway assignment</a>.  The TravelR project was initiated
-   to bridge that gap.  The mastermind behind TravelR is Jeremy Raw, a professional travel demand modeler (and former
-   professional software developer). Please be aware that TravelR is a "hobby" project for which no one is currently
-   getting paid.  Work on the project happens in Jeremy's (rather limited) spare time.
+   to bridge that gap.  The mastermind behind TravelR is Jeremy Raw, a professional travel demand modeler (and erstwhile
+   professional software developer).
+
+   Please be aware that TravelR is a "hobby" project for which no one is currently getting paid.  Work on the project
+   happens in Jeremy's (rather limited) spare time.  Please attend to the
+   <a href="http://en.wikipedia.org/wiki/Yamas">Yamas</a> and
+   <a href="http://en.wikipedia.org/wiki/Niyamas">Niyamas</a>
+   as you contemplate this body of work.
 </p>
 
 <h3>Audience</h3>
@@ -71,7 +76,7 @@ echo $contents; } ?>
 	and to share their results.
       </li>
       <li>
-	 Model developers who would like to build innovative and useful models in R for practical application.
+	Model developers who would like to build innovative and useful models in R for practical application.
       </li>
    </ul>
 
@@ -84,7 +89,8 @@ echo $contents; } ?>
 	 Source code is not open if it is incomprehensible.  We want the <strong>travelr</strong> code to be clear,
 	 well-structured and well-documented; to use standard R approaches to data manipulation whenever possible;
 	 to be fast enough so small test problems can be solved almost instantaneously; and ultimately to be
-	 irresistible to researchers because you won't have to write any of the hard stuff all over again.
+	 irresistible to researchers because you won't have to write any of the hard stuff all over again.<br/>(On the
+	 other hand, we would also like to be able to get into the Scorpion pose.)
       </dd>
       <dt>Industrial-strength features</dt>
       <dd>
@@ -92,7 +98,7 @@ echo $contents; } ?>
 	 analyses.  Because the primary users of R for travel demand modeling are what the industry calls "practitioners"
 	 (as opposed to "academics" or "researchers"), we find ourselves wanting to solve real problems with flexible,
 	 powerful tools.  Certain indispensable features don't have open-source implementations at all, let alone ones
-	 that might actually be practical. 
+	 that might actually be practical. TravelR aims to rectify that shortcoming.
       </dd>
    </dl>
 </p>
@@ -103,7 +109,7 @@ echo $contents; } ?>
   <dd>
      a.k.a. 'Fratar' expansion, which grows a seed matrix toward new marginal totals, expressed either as
      absolute targets, or as fractions or percents of the current marginal totals.  Travel demand modelers love this
-     function and are lost without it.
+     function and are lost without it
   </dd>
   <dt>Highway Networks</dt>
   <dd>Allows flexible coding of highway networks so you mostly won't have to rename your link or node
@@ -117,7 +123,7 @@ echo $contents; } ?>
 	  <li>All-or-Nothing</li>
 	  <li>Multiple Successive Averages</li>
 	  <li>Frank-Wolfe</li>
-	  <li>PARTAN (Parallel-Tangent)</li>
+	  <li>ParTan (Parallel-Tangent)</li>
        </ul>
        The assignment driver function is extensible, so new algorithms can be added at the user level <strong>without</strong> rebuilding the package
   </dd>
@@ -146,7 +152,7 @@ echo $contents; } ?>
 	</dd>
 	<dt>Network Skims</dt>
 	<dd>Another mainstay of travel demand modeling, "skimming" a network generates a numeric origin/destination
-	   matrix by applying a function to a vector of values from the links along a set of network
+	   matrix by applying a function to a vector of values associated with the links along a set of network
 	   paths (e.g. adding up the link lengths to get an origin-destination total path distance).  The goal is to
 	   have skimming operate like R's series of "apply" functions (paths + link value vector + function ->
 	   matrix, where "function" is passed a vector subset of values for each origin-destination path in turn)
@@ -154,11 +160,12 @@ echo $contents; } ?>
   </dd>
 </dl>
 <h3>Unimplemented Features and Other Limitations</h3>
+<p>Certain desirable features are still missing.</p>
 <p>No path-based highway assignment.  All the implemented algorithms are link-based, which is easier and "cheaper" in
    terms of time and memory.  Someone who really comprehends the implementation of path-based assignment is invited to
-   contribute some data structure and algorithmic ideas.</p>
+   contribute data structures and algorithmic ideas.</p>
 <p>No dynamic assignment.  Like path-based assignment, it's on the list but it would be helpful to get input on how to
-   do it.</p>
+   do it efficiently.</p>
 <p>No function to load and skim Transit Networks.  The requirements for transit networks are a bit more cumbersome than
    highway networks.  We plan to get there, but a lot of that depends on time and interest (As noted above, TravelR is
    currently a "hobby" project, in that no one is explicitly getting paid to work on it and time is not always
@@ -183,7 +190,8 @@ echo $contents; } ?>
 <p> The path management code is written in C++ and the rest of the package is in R. The code is open source,
    copyrighted, and licensed under the GNU public license, version 2 or later.</p>
 <h3>Further details</h3>
-<p> The R-Forge <strong>project summary page</strong> is located <a href="http://<?php echo $domain; ?>/projects/<?php echo $group_name; ?>/"><strong>here</strong></a>. </p>
+<p> The R-Forge <strong>project summary page</strong> is located <a href="http://<?php echo $domain; ?>/projects/<?php
+   echo $group_name; ?>/"><strong>here</strong></a>. Look there for news, and eventually, the package itself.</p>
 
 </body>
 </html>
