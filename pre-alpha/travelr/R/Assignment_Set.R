@@ -40,7 +40,7 @@ free.flow<-function(aset)
 
 build.paths<-function(aset,costs)
 	mapply(function(ac,cost,penalties) .shortest.paths(ac$network,cost,penalties),
-	       aset$classes,costs,MoreArgs=(penalties=aset$penalties),
+	       aset$classes,costs,MoreArgs=list(penalties=aset$penalties),
 		   USE.NAMES=TRUE, # Keep assignment class names on resulting list of path structures
 		   SIMPLIFY=FALSE) # and leave results as a list
 
@@ -75,9 +75,13 @@ intercept.paths<-function( paths, links )
 # skim paths returns a demand matrix by performing a function on a set of numeric values
 # corresponding to the links on each path between origin and destination
 skim.paths<-function( paths, costs, empty.val=0.0, FUN="sum", ... ) {
-	if ( FUN=="sum" )
-		return( .skim.paths(paths,costs,empty.val) )
-	else
+	if ( FUN=="sum" ) {
+		(mapply(function(p,c) .skim.paths(p,c,empty.val),
+		    	paths, costs,
+				USE.NAMES=TRUE, # Keep assignment class names on resulting volume set list
+				SIMPLIFY=FALSE) # and leave the results as a list
+		)
+	} else
 		stop("Skimming with functions other than 'sum' is not yet implemented")
 }
 
@@ -254,21 +258,23 @@ add.assignment.class.list <- function( classes, aclass ) {
 
 # Function to update an entire assignment class... Can't imagine why, but here it is!
 hwy.update.class <- function( aset, name, aclass ) {
-	if ( is.null(name) || is.null(class) )
+	if ( is.null(name) || is.null(aclass) )
 		stop("Cannot update assignment class unless name and new data are provided")
 	if ( class(aclass) != "highway.assignment.class" )
 		stop("Use make.assignment.class to construct the new class")
-	if ( is.null(aset[[name]]) )
+	if ( is.null(aset$classes[[name]]) )
 		message("Adding assignment class named ",name)
 	aset$classes[[name]] <- aclass
 }
 
 # Function to update the demand for an assignment class once it's in the assignment set
 hwy.update.demand <- function( aset, name, demand ) {
-	if ( is.null(aset[[name]]) )
+	if ( is.null(name) )
+		stop("Cannot update assignment class demand unless name is provided")
+	if ( is.null(aset$classes[[name]]) )
 		warning("No class named ",name)
 	else if (!is.null(demand))
-		aset[[name]]$demand<-demand
+		aset$classes[[name]]$demand<-demand
 	else
 		warning("No new demand: assignment set was unchanged")
 	return(aset)

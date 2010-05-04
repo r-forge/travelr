@@ -13,13 +13,13 @@ ipf(mtx, factors, method = NULL, max.rmse = 1e-07, max.iter = 50)
 }
 \arguments{
   \item{mtx}{
-  A two-dimensinoal matrix that will be expanded to match the margins contained in \code{factors}
+  A matrix or array with at least two dimensions that will be expanded to match the margins contained in \code{factors}
 }
   \item{factors}{
-  A vector, list, or \code{data.frame} of factors indicating how to grow the matrix
+  A vector, list, or \code{data.frame} of factors indicating how to grow the matri; See details
 }
   \item{method}{
-  How to interpret the factors.  Choices are \dQuote{absolute}, \dQuote{fraction} or \dQuote{percent}.  See details.
+  How to interpret the factors.  Choices are \dQuote{absolute}, \dQuote{fraction} or \dQuote{percent}; See details
 }
   \item{max.rmse}{
   Convergence limit.  Terminate fitting when the root mean square error between the expanded array margins and the target
@@ -44,21 +44,22 @@ of \code{mtx}.  A vector or two-column \code{data.frame} is appropriate if \code
 \code{factors} must be a list.
 
 The first element of \code{factors} corresponds to the desired row sums of the matrix, and the second element
-corresponds to the desired column sums of the matrix.  If \code{factors} is a vector, the same vector will be used to
-establish the row and column sums.
+corresponds to the desired column sums of the matrix.  Likewise if \code{mtx} has additional dimensions.  If
+\code{factors} is a vector, the same vector will be used to establish the sums in all dimensions, but in that
+case all the dimensions must have the same lengths (so that is typically only useful for two-dimensional matrices).
 
-The \code{factors} must each be the same length as the corresponding dimension of the input matrix.
+The elements of \code{factors} must each be the same length as the corresponding dimension of the input matrix.
 
-The \code{method} parameter indicates how the \code{factors} are interpreted.  The method may be \dQuote{absolute}, \dQuote{fraction},
-or \dQuote{percent}.  If \code{method} is \dQuote{absolute}, the factors are taken to be the new margins, and the array is iteratively
-expanded until the margins match the new totals.  If \code{method} is \dQuote{fraction} or \dQuote{percent} methods, the supplied
-factors are converted to absolute values by multiplying the corresponding row or column sums of the matrix by the
-corresponding factors.
+The \code{method} parameter indicates how the \code{factors} are interpreted.  The method may be \dQuote{absolute},
+\dQuote{fraction}, or \dQuote{percent}.  If \code{method} is \dQuote{absolute}, the factors are taken to be the new
+margins, and the array is iteratively expanded until the margins match the new totals.  If \code{method} is
+\dQuote{fraction} or \dQuote{percent} methods, the supplied factors are converted to absolute values by multiplying the
+corresponding row or column sums of the matrix by the corresponding factors.
 
-Note that the \code{factors} must yield the same grand total for both rows and columns of \code{mtx}.  After the
-absolute factors have been prepared according to the chosen \code{method}, if the total of the two sets of growth
-factors is not the same, the second growth factor (column) will itself be factored to match the total of the first
-growth factor and a warning will be issued.
+Note that the \code{factors} must yield the same grand total for all dimensions of \code{mtx}, which will be the same as
+\code{sum(mtx)} once the function is complete.  After the absolute factors have been prepared according to the chosen
+\code{method}, if the sum of the any of the sets of growth factors is not the same, the second and subsequent growth
+factor s(column) will itself be factored to match the total of the first growth factor and a warning will be issued.
 
 The print method shows computed array margins and convergence statistics.
 }

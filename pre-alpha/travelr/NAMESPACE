@@ -69,6 +69,7 @@ export(build.lambda.search)
 export(hwy.gamma.function)
 export(rmse)
 export(ipf)
+export(reaggregate.matrix)
 S3method(print,iterative.fit)
 
 # Low-level path functions

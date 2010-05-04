@@ -299,9 +299,10 @@ extern "C"
 }
 
 extern "C"
-   SEXP skim_paths( SEXP rSPF, SEXP rCostMatrix, SEXP rEmptyVal )
+   SEXP skim_paths( SEXP rSPF, SEXP rCostVector, SEXP rEmptyVal )
 {
 	// Get number zones, number of nodes and number of links from tree attributes.
+	
 
 	NetworkParameters np(rSPF);
 	double empty_val = REAL(rEmptyVal)[0];
@@ -312,7 +313,7 @@ extern "C"
 	dm.setAll(empty_val);
 
 	ShortestPathForest SPF(np.getNodes(),np.getZones(),np.getLinks(),INTEGER(rSPF));
-	SkimVector<double> cv(REAL(rCostMatrix), np.getLinks());
+	SkimVector<double> cv(REAL(rCostVector), np.getLinks());
 
 	PathWalker<double,double> ( SPF, cv, dm ).Skim(empty_val);      // accumulate cost vector into matrix cells along paths
 

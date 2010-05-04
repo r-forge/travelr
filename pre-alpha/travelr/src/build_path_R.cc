@@ -125,7 +125,7 @@ class PathBuilder::Heap {
 		static Candidate Null_Element;
 	public:
 		Heap(int capacity);
-		~Heap();
+//		~Heap();
 		void Clear() { size=0; }
 		int isEmpty() const { return size==0; }
 		int getSize() const { return size; }
@@ -137,16 +137,20 @@ class PathBuilder::Heap {
 
 Candidate PathBuilder::Heap::Null_Element;  // Has lowest possible cost (0.0)
 
-PathBuilder::Heap::Heap( int capacity ) : capacity(capacity), size(0) {
-	candidates = new Candidate[ capacity ];
-	heap = new Candidate * [ capacity + 1 ];
+PathBuilder::Heap::Heap( int capacity ) : capacity(capacity), size(0), heap(0), candidates(0) {
+//  Changed to use safer memory allocation (so R error trapping can occur safely)
+	candidates = (Candidate *) R_alloc(capacity, sizeof(Candidate));
+	heap = (Candidate **) R_alloc(capacity+1, sizeof(Candidate*));
+// 	candidates = new Candidate[ capacity ];
+// 	heap = new Candidate * [ capacity + 1 ];
 	heap[ 0 ] = &Null_Element;  // Makes the math much easier!
 }
 
-PathBuilder::Heap::~Heap() {
-	delete [] candidates;
-	delete [] heap;
-}
+// PathBuilder::Heap::~Heap() {
+//  Changed for use with R_alloc -- memory will be freed when R .Call returns
+// 	delete [] candidates;
+// 	delete [] heap;
+// }
 
 int PathBuilder::Heap::Push(Candidate * candidate) {
 	int i = ++size;  // Set available position to new end of heap

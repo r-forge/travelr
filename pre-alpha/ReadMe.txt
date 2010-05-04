@@ -7,7 +7,7 @@ To build or install from source, you'll need the Rtools (see "Writing R extensio
 for detailed information on what's in that package, where to get it, and how to
 install it).
 
-Development (as of 4/29/2010) has been done with R 2.10.1 (even though 2.11.0 has
+Development (as of 5/3/2010) has been done with R 2.10.1 (even though 2.11.0 has
 just been released) and a consistent Rtools package, and the package should
 build with those tools.
 

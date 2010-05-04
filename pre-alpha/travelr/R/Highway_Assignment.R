@@ -75,7 +75,7 @@ control.defaults <- list(
 	)
 
 parse.control<-function( control, control.element, default.value=NULL ) {
-	cat("Parsing",control.element,"\n")
+#	cat("Parsing",control.element,"\n")
 	element<-control[[control.element]]
 	if ( !is.null(element) ) {
 		result<-element
@@ -138,9 +138,9 @@ build.convergence.test<-function( control, test=c("min.relative.gap","max.iter",
 	for ( i in test.min.names ) test.min <- c(test.min,parse.control(control,i))
 	test.max <- numeric(0)
 	for ( i in test.max.names ) test.max <- c(test.max,parse.control(control,i))
- 	cat("Convergence Test::\n")
- 	cat("Min:",paste(test.min.names,sep=","),"Max:",paste(test.max.names,sep=","),"\n")
- 	cat( "Min:",paste(test.min,collapse=","),"Max:",paste(test.max,collapse=","), "\n")
+# 	cat("Convergence Test::\n")
+# 	cat("Min:",paste(test.min.names,sep=","),"Max:",paste(test.max.names,sep=","),"\n")
+# 	cat( "Min:",paste(test.min,collapse=","),"Max:",paste(test.max,collapse=","), "\n")
 	function(results) {
 		any( unlist(results[min.names]) <= test.min ) ||
 		any( unlist(results[max.names]) >= test.max )

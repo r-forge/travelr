@@ -16,3 +16,5 @@ if not exist data\SiouxFallsAset.Rdata Rscript Test_02_Assignment_Classes.R
 if exist data\SiouxFalls.rda if exist data\SiouxFallsAset.Rdata Rscript Test_03_Highway_Assignment.R
 Rscript Test_04_ipf.R
 Rscript Test_Cost_Integrator.R
+Rscript Test_05_SiouxFallsExample.R
+

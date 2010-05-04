@@ -46,12 +46,17 @@ echo $contents; } ?>
    analysis, and network skims.</p>
 
 <h3>Project Status</h3>
-<p> The TravelR project's first package, not suprisingly named "<strong>travelr</strong>", is in "pre-alpha" state (the code is not quite
-   complete, what is there sort of works, but what works and what doesn't is changing daily and sometimes hourly).
-   A very preliminary version of the package is expected to be surreptitiously released some time in May 2010, and
-   announced to a close circle of co-conspiratoRs.  Subscribe to the travelr-announce list, or email the lead
-   developer  through the <a href="http://<?php echo $domain; ?>/projects/<?php echo $group_name; ?>/">project page</a>
-   if you would like to join the inner circle.</p>
+   <p>
+	  The definitive project status is maintained on the
+	  <a href="http://<?php echo $domain; ?>/projects/<?php echo $group_name; ?>/">TravelR project page</a>.
+   </p>
+
+   <p> The TravelR project's first package, not suprisingly named "<strong>travelr</strong>", is in "pre-alpha" state
+(the code is not quite complete, what is there sort of works, but what works and what doesn't is changing daily and
+sometimes hourly).  A very preliminary version of the package is expected to be surreptitiously released some time in
+May 2010, and announced to a close circle of co-conspiratoRs.  Subscribe to the <a
+href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/travelr-announce">travelr-announce</a> e-mail list to
+see what's happening, or email the lead developer if you would like to join the inner circle.</p>
 
 <h3>History, Motivation and Philosophy</h3>
 <p> Some travel model developers and users have been using R very happily for years, but the ability to do a complete
@@ -61,7 +66,9 @@ echo $contents; } ?>
    professional software developer).
 
    Please be aware that TravelR is a "hobby" project for which no one is currently getting paid.  Work on the project
-   happens in Jeremy's (rather limited) spare time.  Please attend to the
+   happens in Jeremy's (rather limited) spare time.</p>
+
+<p>Please attend to the
    <a href="http://en.wikipedia.org/wiki/Yamas">Yamas</a> and
    <a href="http://en.wikipedia.org/wiki/Niyamas">Niyamas</a>
    as you contemplate this body of work.
@@ -79,29 +86,28 @@ echo $contents; } ?>
 	Model developers who would like to build innovative and useful models in R for practical application.
       </li>
    </ul>
-
 <h3>Design Goals</h3>
-<p>
-   To support these two audiences, there are two design goals:
-   <dl>
-      <dt>Truly Open Source</dt>
-      <dd>
-	 Source code is not open if it is incomprehensible.  We want the <strong>travelr</strong> code to be clear,
-	 well-structured and well-documented; to use standard R approaches to data manipulation whenever possible;
-	 to be fast enough so small test problems can be solved almost instantaneously; and ultimately to be
-	 irresistible to researchers because you won't have to write any of the hard stuff all over again.<br/>(On the
-	 other hand, we would also like to be able to get into the Scorpion pose.)
-      </dd>
-      <dt>Industrial-strength features</dt>
-      <dd>
-	 It is one thing to explore algorithms on simplified networks.  It is something else again to perform real-world
-	 analyses.  Because the primary users of R for travel demand modeling are what the industry calls "practitioners"
-	 (as opposed to "academics" or "researchers"), we find ourselves wanting to solve real problems with flexible,
-	 powerful tools.  Certain indispensable features don't have open-source implementations at all, let alone ones
-	 that might actually be practical. TravelR aims to rectify that shortcoming.
-      </dd>
-   </dl>
-</p>
+<p>To support these two audiences, there are two design goals:</p>
+      <ul><li>Truly Open Source
+		 <ul><li>
+			Source code is not open if it is incomprehensible.  We want the <strong>travelr</strong> code to be clear,
+			well-structured and well-documented; to use standard R approaches to data manipulation whenever possible;
+			to be fast enough so small test problems can be solved almost instantaneously; and ultimately to be
+			irresistible to researchers because you won't have to write any of the hard stuff all over again.
+			</li>
+		 </ul>
+		 </li>
+      <li>Industrial-strength features
+		 <ul><li>
+			It is one thing to explore algorithms on simplified networks.  It is something else again to perform real-world
+			analyses.  Because the primary users of R for travel demand modeling are what the industry calls "practitioners"
+			(as opposed to "academics" or "researchers"), we find ourselves wanting to solve real problems with flexible,
+			powerful tools.  Certain indispensable features don't have open-source implementations at all, let alone ones
+			that might actually be practical. TravelR aims to rectify that shortcoming.
+			</li>
+			</ul>
+		</li>
+	  </ul>
 <h3>Features</h3>
 <p>To meet the "industrial-strength" goal, the initial set of features include the following:</p>
 <dl>
