@@ -41,8 +41,8 @@ fclose($handle);
 echo $contents; } ?>
 -->
 <h2>Welcome to the TravelR project (Travel Demand Modeling in R)!</h2>
-<p>The TravelR project hosts tools for building travel demand models in R, including highway assignment with
-   practical features such as multi-class equilibrium assignment, network turn penalties, select link
+<p>The TravelR project hosts tools for building travel demand models in <strong>R</strong>, including highway assignment
+   with practical features such as multi-class equilibrium assignment, network turn penalties, select link
    analysis, and network skims.</p>
 
 <h3>Project Status</h3>
@@ -59,8 +59,8 @@ href="https://lists.r-forge.r-project.org/cgi-bin/mailman/listinfo/travelr-annou
 see what's happening, or email the lead developer if you would like to join the inner circle.</p>
 
 <h3>History, Motivation and Philosophy</h3>
-<p> Some travel model developers and users have been using R very happily for years, but the ability to do a complete
-   model in R has eluded us since there hasn't been a good way to do
+<p> Some travel model developers and users have been using <strong>R</strong> very happily for years, but the ability
+   to do a complete model in <strong>R</strong> has eluded us since there hasn't been a good way to do
    <a href="http://en.wikipedia.org/wiki/Traffic_assignment">highway assignment</a>.  The TravelR project was initiated
    to bridge that gap.  The mastermind behind TravelR is Jeremy Raw, a professional travel demand modeler (and erstwhile
    professional software developer).
@@ -79,31 +79,31 @@ see what's happening, or email the lead developer if you would like to join the 
    <ul>
       <li>
 	Researchers exploring travel demand modeling algorithms and methods who would like to use the
-	very fast, flexible, powerful and extensible R open-source environment to speed their work
+	very fast, flexible, powerful and extensible <strong>R</strong> open-source environment to speed their work
 	and to share their results.
       </li>
       <li>
-	Model developers who would like to build innovative and useful models in R for practical application.
+	Model developers who would like to build innovative and useful models in <strong>R</strong> for practical application.
       </li>
    </ul>
 <h3>Design Goals</h3>
 <p>To support these two audiences, there are two design goals:</p>
       <ul><li>Truly Open Source
 		 <ul><li>
-			Source code is not open if it is incomprehensible.  We want the <strong>travelr</strong> code to be clear,
-			well-structured and well-documented; to use standard R approaches to data manipulation whenever possible;
-			to be fast enough so small test problems can be solved almost instantaneously; and ultimately to be
-			irresistible to researchers because you won't have to write any of the hard stuff all over again.
+	    Source code is not open if it is incomprehensible or unusable.  We want the <strong>travelr</strong> code to
+	    be clear, well-structured and well-documented; to use standard <strong>R</strong> approaches to data manipulation whenever
+	    possible; to be fast enough so small test problems can be solved almost instantaneously; and ultimately to
+	    be irresistible to researchers because you won't have to write any of the hard stuff all over again.
 			</li>
 		 </ul>
 		 </li>
       <li>Industrial-strength features
 		 <ul><li>
-			It is one thing to explore algorithms on simplified networks.  It is something else again to perform real-world
-			analyses.  Because the primary users of R for travel demand modeling are what the industry calls "practitioners"
-			(as opposed to "academics" or "researchers"), we find ourselves wanting to solve real problems with flexible,
-			powerful tools.  Certain indispensable features don't have open-source implementations at all, let alone ones
-			that might actually be practical. TravelR aims to rectify that shortcoming.
+	    It is one thing to explore algorithms on simplified networks.  It is something else again to perform real-world
+	    analyses.  Because the primary users of <strong>R</strong> for travel demand modeling are what the industry calls "practitioners"
+	    (as opposed to "academics" or "researchers"), we find ourselves wanting to solve real problems with flexible,
+	    powerful tools.  Certain indispensable features don't have open-source implementations at all, let alone ones
+	    that might actually be practical. TravelR aims to rectify that shortcoming.
 			</li>
 			</ul>
 		</li>
@@ -111,16 +111,23 @@ see what's happening, or email the lead developer if you would like to join the 
 <h3>Features</h3>
 <p>To meet the "industrial-strength" goal, the initial set of features include the following:</p>
 <dl>
+  <dt>Matrix Re-Aggregation</dt>
+  <dd>
+     Allows a matrix to be summed or factored to a different number of rows and columns based on a correspondence
+     table.  So if you need to map census blocks to transportation analysis zones, zones to districts, or any such
+     similar operation, you are no longer left to struggle with obscure <strong>R</strong> strategies.
+  </dd>
   <dt>Iterative Proportional Fitting</dt>
   <dd>
      a.k.a. 'Fratar' expansion, which grows a seed matrix toward new marginal totals, expressed either as
      absolute targets, or as fractions or percents of the current marginal totals.  Travel demand modelers love this
-     function and are lost without it
+     function and are lost without it.  Plus it helps you do trip distribution models (that's what T.J. Fratar invented
+     it for).
   </dd>
   <dt>Highway Networks</dt>
   <dd>Allows flexible coding of highway networks so you mostly won't have to rename your link or node
-     attributes, and interoperates with some other cool R packages (e.g.
-     <a href="http://igraph.sourceforge.net/">igraph</a>).  As long as you can provide the network as tables that R
+     attributes, and interoperates with some other cool <strong>R</strong> packages (e.g.
+     <a href="http://igraph.sourceforge.net/">igraph</a>).  As long as you can provide the network as tables that <strong>R</strong>
      can import (CSV, DBF, ODBC) and you understand which fields hold labels for the "from" and "to" nodes, you can
      make a highway network that TravelR can use
   <dt>Equilibrium Highway Assignment</dt>
@@ -135,11 +142,11 @@ see what's happening, or email the lead developer if you would like to join the 
   </dd>
   <dt>Production Support</dt>
   <dd>
-     The highway assignment should be able to scale up to problems of real-world size and complexity.  Features that
-     initially support that goal include:
+     The highway assignment and other functions should scale up to problems of real-world size and complexity.
+     Features that initially support that goal include:
      <dl>
 	<dt>"Fast enough"</dt>
-	<dd>We intend to optimize performance enough that we can model "life-size" networks in R, in our lifetime</dd>
+	<dd>We intend to optimize performance enough that we can model "life-size" networks in <strong>R</strong>, in our lifetime</dd>
 	<dt>Multi-Class Assignment</dt>
 	<dd>Supported from the ground up, allowing class-by-class network subsets, demand matrices, and cost
 	   functions, in a way that makes it relatively painless to try out multi-class assignment with new
@@ -154,13 +161,13 @@ see what's happening, or email the lead developer if you would like to join the 
 	</dd>
 	<dt>Select Link Analysis</dt>
 	<dd>Extracts demand matrices and link flows from paths that intercept certain links, and is integrated into the
-	   assignment algorithms so as to extract correctly weighted equilibrium flows
+	   assignment algorithms so as to extract correctly weighted equilibrium flows for intercepted links
 	</dd>
 	<dt>Network Skims</dt>
 	<dd>Another mainstay of travel demand modeling, "skimming" a network generates a numeric origin/destination
 	   matrix by applying a function to a vector of values associated with the links along a set of network
 	   paths (e.g. adding up the link lengths to get an origin-destination total path distance).  The goal is to
-	   have skimming operate like R's series of "apply" functions (paths + link value vector + function ->
+	   have skimming operate like <strong>R</strong>'s series of "apply" functions (paths + link value vector + function ->
 	   matrix, where "function" is passed a vector subset of values for each origin-destination path in turn)
      </dl>
   </dd>
@@ -184,16 +191,16 @@ see what's happening, or email the lead developer if you would like to join the 
 <h3>Relationship to Commercial Software</h3>
 <p> TravelR is not intended to be a replacement for commercial travel demand modeling software packages for most model
    developers and users.</p>
-<p>To use this R package successfully, you need to know what you're doing (both in R and in
+<p>To use this <strong>R</strong> package successfully, you need to know what you're doing (both in <strong>R</strong> and in
    travel demand modeling).  There is very little "canned" stuff in it, though we are putting together some detailed
    working models as examples.  You need to be able to write network cost functions (and know in detail what a network
    cost function is supposed to do), and you need to have external tools for coding your highway network.  There are no
    explicit data management or user interface tools in the project, although you can cobble together a lot from
-   <a href="http://cran.r-project.org">other R packages</a>.</p>
+   <a href="http://cran.r-project.org">other <strong>R</strong> packages</a>.</p>
 <p>That said, it is our hope that many travel modelers will find TravelR useful and accessible enough so it is there
    for you when you need to try something new and different.</p> 
 <h3>Implementation</h3>
-<p> The path management code is written in C++ and the rest of the package is in R. The code is open source,
+<p> The path management code is written in C++ and the rest of the package is in <strong>R</strong>. The code is open source,
    copyrighted, and licensed under the GNU public license, version 2 or later.</p>
 <h3>Further details</h3>
 <p> The R-Forge <strong>project summary page</strong> is located <a href="http://<?php echo $domain; ?>/projects/<?php
