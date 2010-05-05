@@ -24,7 +24,7 @@
 .zero.base<-function(v) v-1
 .one.base <-function(v) v+1
 
-.build.network.set <- function( network, link.subset, pen.subset=NULL ) {
+.build.network.set <- function( network, link.subset=NULL, pen.subset=NULL ) {
 	# Construct network structures for use in path building
 
 	# Note that for network subsets (e.g. a network without HOV lanes), the cost and volume vectors will still have
@@ -32,6 +32,7 @@
 	# the selected set will be inserted into the edge list and offsets for path-building.
 	# The correspondence to the base tables of links and penalties is through .LinkID and .PenaltyID
 
+	if (is.null(link.subset)) link.subset=TRUE
 	links<-network$Links[link.subset,]
 	Link.fields<-network$Link.fields
 	edges<-matrix( c(A=.zero.base(links[[Link.fields["From"]]]),

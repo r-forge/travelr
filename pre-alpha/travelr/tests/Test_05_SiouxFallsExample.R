@@ -22,7 +22,6 @@ travel.times <- skim.paths(paths,aset$ff.cost)[["All"]] # only one purpose: "All
 options(width=180)
 base.distribution <- hwy.gamma.function(travel.times,-0.02,-0.123) # HBW coefficients from NCHRP 365
 trip.table <- ipf(base.distribution,list(rows=productions, cols=attractions),method="absolute")
-print(round(trip.table,2))
 
 # Note that either of the following is possible
 # The function version will give nicer error messages

@@ -1,3 +1,20 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Copyright (C) 2010 by Jeremy Raw
+%   This program is free software; you can redistribute it and/or modify
+%   it under the terms of the GNU General Public License as published by
+%   the Free Software Foundation; either version 2 of the License, or
+%   (at your option) any later version.
+% 
+%   This program is distributed in the hope that it will be useful,
+%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%   GNU General Public License for more details.
+% 
+%   A copy of the GNU General Public License is available at
+%   http://www.r-project.org/Licenses/
+%   and included in the R distribution (in directory ‘share/licenses’).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \name{Skim network}
 \alias{skim network}
 \alias{skim.paths}
@@ -31,7 +48,7 @@ skim.paths(paths,costs,empty.val=0.0,FUN=sum,...)
 }
 \details{
 
-dQuote{Skimming a network} means computing a value for the shortest path between each origin and each destination in the
+dQuote{\dfn{Skimming a network}} means computing a value for the shortest path between each origin and each destination in the
 network.  \code{skim.paths} returns a square matrix where the number of rows and columns corresponds to the number of zones
 in the network, and the value in each cell is the result of applying \code{FUN} to the \code{costs} values corresponding to
 the links on each shortest path.
@@ -45,30 +62,27 @@ intrazonal cells (the diagonal of the resulting matrix, where the origin and des
 will indicate that the origin and destination are not connected, which can be useful to know when debugging a highway
 network.
 
-\emph{The following description is not implemented yet:} However, by applying a different function, skimming can extract
-a wide range of values, including the mean, minimum, or maximum link cost on a path, a true or false value depending on
-whether a certain link exists in a path (which yields the same result as \code{\link{.intercept.paths}}, only more
-slowly).  In general, if this function were designed to appeal to people who are primarily R users, rather than people
-who are primarily travel modelers, it might also be called "path.apply" since the basic operation works very much like
-\code{\link{tapply}} applied to a list of vectors of varying lengths.
+\emph{The following functionality is not implemented yet:} However, by applying a different function, skimming can
+extract a wide range of values, including the mean, minimum, or maximum link cost on a path, or perhaps even a true or
+false value depending on whether a certain link exists in a path (which yields the same result as
+\code{\link{.intercept.paths}}, only more slowly).  In general, if this function were named to appeal to people who
+are primarily R users, rather than people who are primarily travel modelers, it might also be called "path.apply" since
+the basic operation works very much like \code{\link{tapply}} applied to a list of vectors of varying lengths.
 
 }
 \value{
 \code{skim.paths} returns a numeric origin/destination matrix where each cell contains the
 corresponding skim result; see details above.
 }
+\author{
+Jeremy Raw
+}
 \references{
 Martin, W.A., and McGuckin, N.A., 1998, \emph{NCHRP Report 365: Travel Estimation Techniques for Urban Planning},
 National Cooperative Highway Research Program / Transportation Research Board
 }
-\author{
-Jeremy Raw
-}
-\seealso{
-	\code{\link{build.paths}} and \code{\link{highway.assignment}} for ways to construct the paths parameter.
-}
 \examples{
-\dontrun{
+# A tiny, complete travel model using travelr functions
 data(SiouxFalls)
 
 # Trip Generation
@@ -91,5 +105,4 @@ aset <- hwy.update.demand(aset,"All",trip.table)
 # Trip Assignment
 assignment.results <- highway.assign(aset,method="Frank.Wolfe")
 loaded.links <- assignment.results$volumes
-}
 }

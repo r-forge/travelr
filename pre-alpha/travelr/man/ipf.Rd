@@ -1,11 +1,29 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Copyright (C) 2010 by Jeremy Raw
+%   This program is free software; you can redistribute it and/or modify
+%   it under the terms of the GNU General Public License as published by
+%   the Free Software Foundation; either version 2 of the License, or
+%   (at your option) any later version.
+% 
+%   This program is distributed in the hope that it will be useful,
+%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%   GNU General Public License for more details.
+% 
+%   A copy of the GNU General Public License is available at
+%   http://www.r-project.org/Licenses/
+%   and included in the R distribution (in directory ‘share/licenses’).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \name{ipf}
 \alias{ipf}
 \alias{print.iterative.fit}
+\alias{fratar}
 \title{
 Iterative proportional fitting
 }
 \description{
-Perform iterative proportional fitting of a matrix
+Perform iterative proportional fitting of a matrix using the \dQuote{Fratar} method
 }
 \usage{
 ipf(mtx, factors, method = NULL, max.rmse = 1e-07, max.iter = 50)
@@ -65,7 +83,6 @@ The print method shows computed array margins and convergence statistics.
 }
 
 \value{
-
 Function \code{ipf} returns a matrix with the same dimensions and dimnames as the input matrix, but with a class of
 \code{iterative.fit}.  The resulting object has the following attributes:
 \describe{
@@ -73,11 +90,15 @@ Function \code{ipf} returns a matrix with the same dimensions and dimnames as th
 	\item{RMSE}{The root mean square error after the final iteration}
 	\item{Iteration}{How many row and column iterations were executed}
 	}
-The attributes of the \code{iterative.fit} object are printed along with the matrix margins (building using
+The attributes of the \code{iterative.fit} object are printed along with the matrix margins (built using
 \code{\link{addmargins}} when the class-specific print method is invoked.
 }
 
 \author{ Jeremy Raw }
+
+\references{
+T.J. Fratar, 1954. \dQuote{Vehicular trip distribution by successive approximation.} Traffic Quart. 8 (1954), pp. 53-65
+}
 
 \examples{
 m<-matrix(c(5,50,100,200,

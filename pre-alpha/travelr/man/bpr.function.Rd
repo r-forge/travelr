@@ -1,7 +1,26 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Copyright (C) 2010 by Jeremy Raw
+%   This program is free software; you can redistribute it and/or modify
+%   it under the terms of the GNU General Public License as published by
+%   the Free Software Foundation; either version 2 of the License, or
+%   (at your option) any later version.
+% 
+%   This program is distributed in the hope that it will be useful,
+%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%   GNU General Public License for more details.
+% 
+%   A copy of the GNU General Public License is available at
+%   http://www.r-project.org/Licenses/
+%   and included in the R distribution (in directory ‘share/licenses’).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \name{BPR function}
 \alias{build.BPR.cost.function}
 \alias{build.BPR.objective.function}
 \alias{bpr.function}
+\alias{bpr.functions}
+\alias{BPR}
 
 \title{
 BPR cost and objective functions
@@ -20,10 +39,10 @@ build.BPR.objective.function(cost.data)
 }
 \details{
 
-\code{build.BPR.cost.function} generates a function that takes a vector or matrix of volumes and applies parameters to them
-to compute a congested travel time, using the venerable (or execrable, depending on your perspective) Bureau of Public
-Roads formula.  The resulting function can be used as a cost function for an assignment class within an
-\code{\link{assignment.set}}.
+\code{build.BPR.cost.function} generates a function that takes a vector or matrix of volumes and applies parameters to
+them to compute a congested travel time, using the venerable (or execrable, depending on your perspective) Bureau of
+Public Roads formula (the Bureau of Public Roads was a precursor of the U.S. Federal Highway Administration).  The
+resulting function can be used as a cost function for an assignment class within an \code{\link{assignment.set}}.
 
 \code{build.BPR.objective.function} generates a function that can be used as an objective function in equilibrium
 assignment algorithms that attempt to minimize generalized cost.  This evaluates analytically the integral of a BPR
@@ -69,9 +88,11 @@ See \code{\link{assignment.set}} and \code{\link{cost.function}} for more inform
 is selected, and how these functions are used in highway assignment.
 }
 \value{
-\code{build.BPR.function} returns a function that takes a link vector (or matrix) of volumes and returns a link vector (or matrix) of link costs.
+\code{build.BPR.cost.function} returns a function that takes a link vector (or matrix) of volumes and returns a link vector (or matrix) of link costs.
+\code{build.BPR.objective.function} returns a function that takes a link vector (or matrix) of volumes and returns a scalar value indicating total cost.
 }
 \references{
+Bureau of Public Roads, 1964. \emph{Traffic Assignment Manual}.  Urban Planning Division, U.S. Department of Commerce
 Transportation Research Board, 2000. \emph{Highway Capacity Manual}
 }
 \author{

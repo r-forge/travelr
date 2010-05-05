@@ -1,3 +1,20 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Copyright (C) 2010 by Jeremy Raw
+%   This program is free software; you can redistribute it and/or modify
+%   it under the terms of the GNU General Public License as published by
+%   the Free Software Foundation; either version 2 of the License, or
+%   (at your option) any later version.
+% 
+%   This program is distributed in the hope that it will be useful,
+%   but WITHOUT ANY WARRANTY; without even the implied warranty of
+%   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+%   GNU General Public License for more details.
+% 
+%   A copy of the GNU General Public License is available at
+%   http://www.r-project.org/Licenses/
+%   and included in the R distribution (in directory ‘share/licenses’).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \name{map.highway.nodes}
 \alias{map.highway.nodes}
 \alias{summary.highway.node.map}
@@ -46,13 +63,14 @@ cause performance problems when they are left in place, and \code{map.highway.no
 an integer sequence with gaps into a continuous sequence, and recovering the original sequence later from the
 continuous sequence.
 
-\strong{Note:}The standard R factor utility can also be used to construct a suitable node mapping.  The sequence
-with gaps can be converted to a factor, and the resulting factor codes will serve as a suitable sequence.  Either
-approach can be used successfully, provided one carefully handles zone numbering.  In particular, if the maximum
-zone number in the original network is, say, \code{250}, but there is a range of numbers from \code{176} to \code{200}
-that are not used, then the correct value for the network \code{numZones} parameter after applying the \R function
-\code{factor} is 225.  \code{map.highway.nodes} will catch this situation and force the user to address it explicitly,
-saving much grief later on.
+\strong{Note:}The standard R factor utility can also be used to construct a suitable node mapping, either alone or in
+conjunction with \code{map.highway.nodes}.  The sequence with gaps can be converted to a factor, and the resulting
+factor codes will serve as a suitable sequence.  Either approach can be used successfully, provided one carefully
+handles zone numbering.  In particular, if the maximum zone number in the original network is, say, \code{250}, but
+there is a range of numbers from \code{176} to \code{200} that are not used, then the correct value for the network
+\code{numZones} parameter after applying the \R function \code{factor} is 225.  \code{map.highway.nodes} will catch this
+situation and force the user to address it explicitly, saving much grief later on.
+
 }
 \value{
 Returns a \code{highway.node.map} object, with two functions, \code{map} and \code{unmap} that can be used to

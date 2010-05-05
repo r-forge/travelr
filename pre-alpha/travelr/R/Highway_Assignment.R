@@ -64,7 +64,7 @@ highway.assign <- function( aset, method=c("AON","MSA","Frank.Wolfe","ParTan"), 
 # Note that some algorithms like MSA may provide alternate "global" defaults
 
 control.defaults <- list(
-		intercept=NULL,
+		intercept        = NULL,
 		min.relative.gap = 1e-4,               # stop if relative.gap goes below this value
 		max.iter         = 100,				 # for MSA, it's overridden to 4 and other stopping conditions are ignored
 										     # set max.iter=0 for open-ended running
