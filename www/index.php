@@ -196,7 +196,7 @@ see what's happening, or email the lead developer if you would like to join the 
    "free" in useful ways.  We would be thrilled if it caught on and lots of people found it useful, but we don't
    expect it to appeal to many of the people who buy and use commercial travel demand modeling software:  the fact
    that it is free means that it takes work, rather than money, to get it to do what you want.  But for modelers who
-   are doing work anyway (especially those who are already working with <strong>R</emph>), and who want to try out
+   are doing work anyway (especially those who are already working with <strong>R</strong>), and who want to try out
    innovative modeling approaches, the TravelR project will hopefully become a useful part of the toolbox.
 </p>
 <p>To use this <strong>R</strong> package successfully, you need to know what you're doing (both in <strong>R</strong> and in
@@ -214,7 +214,7 @@ see what's happening, or email the lead developer if you would like to join the 
 <h3>Further details</h3>
 <p> The R-Forge <strong>project summary page</strong> is located <a href="http://<?php echo $domain; ?>/projects/<?php
    echo $group_name; ?>/"><strong>here</strong></a>. Look there for news, and (soon) to download the bleeding edge
-   package itself. A <http href="http://cran.r-project.org">CRAN</a> package will become available once the bleeding
+   package itself. A <a href="http://cran.r-project.org">CRAN</a> package will become available once the bleeding
    is under control.
 </p>
 
