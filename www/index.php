@@ -146,7 +146,10 @@ see what's happening, or email the lead developer if you would like to join the 
      Features that initially support that goal include:
      <dl>
 	<dt>"Fast enough"</dt>
-	<dd>We intend to optimize performance enough that we can model "life-size" networks in <strong>R</strong>, in our lifetime</dd>
+	<dd>We intend to optimize performance enough that we can model "life-size" networks in <strong>R</strong>, in
+	   our lifetime.  Version 0.1 is probably not yet fast enough, but it's much faster than we expected it to be
+	   when we first got started, and it's not too slow to be useful.
+	</dd>
 	<dt>Multi-Class Assignment</dt>
 	<dd>Supported from the ground up, allowing class-by-class network subsets, demand matrices, and cost
 	   functions, in a way that makes it relatively painless to try out multi-class assignment with new
@@ -188,23 +191,32 @@ see what's happening, or email the lead developer if you would like to join the 
    limit, which is not as bad as it sounds:  we're currently testing four-class assignment on a network with 15,000
    links and 980 zones and coming in around 300 megabytes for a full equilibrum assignment run (that's probably a
    "mid-size" network by professional standards).</p>
-<h3>Relationship to Commercial Software</h3>
-<p> TravelR is not intended to be a replacement for commercial travel demand modeling software packages for most model
-   developers and users.</p>
+<h3>TravelR and Open Source</h3>
+<p> TravelR is open source software.  It is intended to work, to be modifiable by informed users, and to be
+   "free" in useful ways.  We would be thrilled if it caught on and lots of people found it useful, but we don't
+   expect it to appeal to many of the people who buy and use commercial travel demand modeling software:  the fact
+   that it is free means that it takes work, rather than money, to get it to do what you want.  But for modelers who
+   are doing work anyway (especially those who are already working with <strong>R</emph>), and who want to try out
+   innovative modeling approaches, the TravelR project will hopefully become a useful part of the toolbox.
+</p>
 <p>To use this <strong>R</strong> package successfully, you need to know what you're doing (both in <strong>R</strong> and in
    travel demand modeling).  There is very little "canned" stuff in it, though we are putting together some detailed
    working models as examples.  You need to be able to write network cost functions (and know in detail what a network
-   cost function is supposed to do), and you need to have external tools for coding your highway network.  There are no
-   explicit data management or user interface tools in the project, although you can cobble together a lot from
+   cost function is supposed to do), and you probably  need to have external tools for coding your highway network
+   (there are some useful free and open source tools for that).  There are no explicit data management or user interface
+   tools in the project, although you can cobble together a lot from
    <a href="http://cran.r-project.org">other <strong>R</strong> packages</a>.</p>
-<p>That said, it is our hope that many travel modelers will find TravelR useful and accessible enough so it is there
-   for you when you need to try something new and different.</p> 
+<p>That said, it is our hope that many travel modelers will find TravelR useful and accessible enough that it will
+   inspire them to try out some new things.</p> 
 <h3>Implementation</h3>
 <p> The path management code is written in C++ and the rest of the package is in <strong>R</strong>. The code is open source,
    copyrighted, and licensed under the GNU public license, version 2 or later.</p>
 <h3>Further details</h3>
 <p> The R-Forge <strong>project summary page</strong> is located <a href="http://<?php echo $domain; ?>/projects/<?php
-   echo $group_name; ?>/"><strong>here</strong></a>. Look there for news, and eventually, the package itself.</p>
+   echo $group_name; ?>/"><strong>here</strong></a>. Look there for news, and (soon) to download the bleeding edge
+   package itself. A <http href="http://cran.r-project.org">CRAN</a> package will become available once the bleeding
+   is under control.
+</p>
 
 </body>
 </html>
