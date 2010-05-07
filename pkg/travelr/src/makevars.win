@@ -1,0 +1,2 @@
+all: short_path_R.o build_path_R.o $(SHLIB)
+short_path_R.o build_path_R.o: build_path_R.h path_templates_R.h elements_R.h
