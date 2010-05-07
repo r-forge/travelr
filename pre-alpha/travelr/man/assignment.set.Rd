@@ -17,6 +17,7 @@
 
 \name{assignment.set}
 \alias{assignment.set}
+\alias{assignment set}
 \alias{new.assignment.set}
 \alias{cost.volume.type}
 \alias{hwy.update.class}
@@ -131,7 +132,8 @@ should have been built by \code{\link{make.assignment.class}}
 \code{hwy.update.penalties} returns the assignment set with updated penalty values; this function is useful for
 dynamically updating penalty values during an assignment algorithm.
 
-\code{add.assignment.class}, when applied to a \code{assignment.set} will 
+\code{add.assignment.class}, when applied to a \code{assignment.set} will add an additional assignment class to the
+set of assignment classes already defined.  It the named class already exists, its values will be updated.
 
 The various \code{hwy.update} functions can be replaced with suitable recursive list indexing to find and then add or
 replace the target value, and the user may wish to do that if speed is of utmost concern.  Otherwise, these functions

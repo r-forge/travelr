@@ -48,7 +48,7 @@ skim.paths(paths,costs,empty.val=0.0,FUN=sum,...)
 }
 \details{
 
-dQuote{\dfn{Skimming a network}} means computing a value for the shortest path between each origin and each destination in the
+\dQuote{\dfn{Skimming a network}} means computing a value for the shortest path between each origin and each destination in the
 network.  \code{skim.paths} returns a square matrix where the number of rows and columns corresponds to the number of zones
 in the network, and the value in each cell is the result of applying \code{FUN} to the \code{costs} values corresponding to
 the links on each shortest path.

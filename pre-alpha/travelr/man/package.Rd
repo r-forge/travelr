@@ -31,7 +31,7 @@ The \pkg{travelr} package provides tools for travel demand modeling that are not
 
 In particular, the package directly supports the following operations:
 \itemize{
-\item{Iterative proportional fitting (dQuote{Fratar} expansion) of matrices to new marginal totals (gravity models are a sub-species of this fitting): \code{\link{ipf}}}
+\item{Iterative proportional fitting (\dQuote{Fratar} expansion) of matrices to new marginal totals (gravity models are a sub-species of this fitting): \code{\link{ipf}}}
 \item{Re-aggregating matrices to a different set of dimensions using an equivalence table: \code{\link{reaggregate.matrix}}}
 \item{Numeric integration by adaptive quadrature for use in assignment algorithms: \code{\link{cost.integrator}}}
 \item{Loading a variety of highway network file formats into a standard internal format: \code{\link{highway.net}}}
@@ -52,6 +52,8 @@ algorithms for highway assignment.
 Martin, W.A., and McGuckin, N.A., 1998, \emph{NCHRP Report 365: Travel Estimation Techniques for Urban Planning},
 National Cooperative Highway Research Program / Transportation Research Board
 Ortuzar, J. D., and Willumsen, L.G., 2001, \emph{Modelling Transport, Third Edition}, John Wiley & Sons
+Sheffi, Y., 1985, \emph{Urban Transportation Networks}, Prentice-Hall; available online as a PDF
+at \url{http://web.mit.edu/sheffi/www/urbanTransportation.html}
 }
 \examples{
 \dontrun{

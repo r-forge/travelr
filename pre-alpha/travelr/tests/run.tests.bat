@@ -13,8 +13,8 @@ echo Running tests
 @echo ON
 if not exist data\SiouxFalls.rda       Rscript Test_01_Highway_Network.R
 if not exist data\SiouxFallsAset.Rdata Rscript Test_02_Assignment_Classes.R
-if exist data\SiouxFalls.rda if exist data\SiouxFallsAset.Rdata Rscript Test_03_Highway_Assignment.R
-Rscript Test_04_ipf.R
-Rscript Test_Cost_Integrator.R
+rem if exist data\SiouxFalls.rda if exist data\SiouxFallsAset.Rdata Rscript Test_03_Highway_Assignment.R
+rem Rscript Test_04_ipf.R
+rem Rscript Test_Cost_Integrator.R
 Rscript Test_05_SiouxFallsExample.R
 

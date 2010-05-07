@@ -52,6 +52,10 @@ in order to facilitate testing against other traffic assignment implementations.
 
 Other networks from \url{http://www.bgu.ac.il/~bargera/tntp} can be loaded into travelr format using
 function \code{\link{tntp.network}}. Trip tables can be loaded from the same source using \code{\link{tntp.od}}.
+
+/emph{Note for version 0.1:} The Richmond network is not included initially since it is rather large.  It may be made
+available during development in a separate package.  It will be helpful if you attempt to load your own network and give
+us feedback on how that went (easy, hard, impossible) so we can clean up the functions and documentation.
 }
 \seealso{
 	\code{\link{tntp.network}}, \code{\link{tntp.od}}

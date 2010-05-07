@@ -253,7 +253,7 @@ build.log.function <- function(control) {
 	best.lower.bound<-as.numeric(NA)
 
 	lambda.func <- build.lambda.function(aset)
-	lambda.search <- build.lambda.search( lambda.func )
+	lambda.search <- build.lambda.search( lambda.func, opt.tol=parse.control(control,"opt.tol") )
 
 	while (TRUE) {
 		cost <- aset$cost.function(vol,aset)
@@ -285,7 +285,8 @@ build.log.function <- function(control) {
 
 	# Construct helper values and functions
 	flow<-sum(sapply(aset$classes,function(ac)sum(ac$demand),USE.NAMES=FALSE))
-	build.intercepts<-build.intercept.function(iset<-parse.control(control,"intercept"),aset)
+	iset <- parse.control(control,"intercept")
+	build.intercepts<-build.intercept.function(iset,aset)
 	converged<-build.convergence.test(control,c("min.relative.gap","max.iter","max.elapsed"))
 	equil.stats<-build.equil.stats.function(aset$objective.function, flow)
 
@@ -297,7 +298,7 @@ build.log.function <- function(control) {
 	best.lower.bound<-as.numeric(NA)
 
 	lambda.func <- build.lambda.function(aset)
-	lambda.search <- build.lambda.search( lambda.func )
+	lambda.search <- build.lambda.search( lambda.func, opt.tol=parse.control(control,"opt.tol") )
 
 	while (TRUE) {
 		cost <- aset$cost.function(vol,aset)
@@ -390,11 +391,11 @@ weighted.update.intercept<-function( weight, base, new ) {
 # Look at the Frank-Wolfe or ParTan algorithms to see applications
 
 build.lambda.function<-function(aset)
-	function( lambda, vol, diff ) sum(aset$cost.function(vol+lambda*diff,aset)*diff)
+	function( lambda, vol, diff ) aset$objective.function(vol+lambda*diff)
 
 build.lambda.search<-function(lambda.func,opt.tol=.Machine$double.eps^0.25) {
 	function(vol,diff,interval=c(0,1)) {
-		search.result<-uniroot(lambda.func,interval=interval,tol=opt.tol,vol=vol,diff=diff)
-		return(list(lambda=search.result$root,objective=search.result$f.root))
+		search.result<-optimize(lambda.func,vol=vol,diff=diff,interval=interval,tol=opt.tol)
+		return(list(lambda=search.result$minimum,objective=search.result$objective))
 	}
 }

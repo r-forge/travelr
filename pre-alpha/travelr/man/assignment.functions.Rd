@@ -90,7 +90,7 @@ These functions will generally only be of interest to the developers of new high
 by a local default if the \code{default} parameter is supplied.  The global defaults are as follows:
 \tabular{llll}{
 min.relative.gap\tab numeric\tab \code{1e-4} \tab Target for relative gap statistic \cr
-max.iter\tab numeric\tab \code{100} \tab Maximum iteration, except 4 for method=dQuote{\acronym{MSA}}) \cr
+max.iter\tab numeric\tab \code{100} \tab Maximum iteration, except 4 for method=\dQuote{\acronym{MSA}}) \cr
 max.elapsed\tab numeric \tab \code{3600} \tab seconds since the algorithm started \cr
 opt.tol\tab numeric \tab \code{.Machine$double.eps^0.5} \tab tolerance for internal line searches) \cr
 verbose\tab numeric \tab \code{1} \tab Debugging level (higher numbers may generate more output; 0 for silent) \cr

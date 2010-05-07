@@ -45,8 +45,9 @@ assignment algorithms.
 
 }
 \value{
-Returns a function that builds an \dfn{intercept list} with two components: \code{od} containing the selected
-origin/destination matrix, and \code{links} which is the result of loading the selected demand onto the shortest paths.
+Returns a function that builds an \dfn{intercept list} with two components: \code{od}, a list containing the selected
+origin/destination matrix for each assignment class, and \code{volumes} which is a \code{data.frame} of volumes
+for each assignment class (comparable to the results from \code{\link{load.paths}}).
 }
 \author{
 Jeremy Raw

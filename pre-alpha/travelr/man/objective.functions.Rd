@@ -65,13 +65,18 @@ Objective functions are called from within the assignment algorithms (\code{\lin
 
 Parameter:
 \describe{
-\item{volume}{volumes for which the objective function is to be computed; see below}
+\item{\code{volume}}{volumes for which the objective function is to be computed; see below}
 }
 
-The objective function returns a numeric scalar value that will be minimized by the highway assignment function.  Note
-that it is possible to write objective functions that ignore certain assignment classes (for example, if loading a
-certain class always at free-flow conditions).  It is nevertheless usually more efficient in those cases to construct
-multiple assignment sets and load the classes separately.
+The objective function returns a numeric scalar value that is used to assess equilibrium (which is presumed to be
+reached when the objective function has been minimized).
+
+It is important to note that the objective function is not directly minimized by any of the equilibrium assignment
+methods currently implemented in \pkg{travelr}: the actual search direction toward a \dQuote{better} solution is built
+from a linear approximation based on the \link{cost function}.  The objective function is used simply to evaluate the
+quality of the current solution.  The ability to change that strategy at will is, of course, one of the beauties of open
+software.  Anyone who has a deeper understanding of these issues is welcome to suggest or implement improvements to the
+\pkg{travelr} algorithms.
 
 The helper function \code{build.general.objective.function} will construct a usable \code{objective.function}
 from an arbitrary \code{cost.function}.  The free-flow volumes and costs are ordinarily computed by
@@ -86,11 +91,17 @@ for the common \acronym{BPR} functional form.
 The \code{cost.integrator} function is also available as a general-purpose \R utility which will evaluate integrals for
 functions taking a vector of parameters.  In the case of a vector value, the function to be integrated is presumed to be
 the summation of the cost.function evaluated for each of the vector values.  This is considerably more flexible than the
-standard \code{integrate} function, but also a good deal slower.  The \code{cost.integrator} function uses adaptive
-quadrature and Simpson's rule for approximating definite integrals.
+standard \code{integrate} function, but also a very much slower since the integration will be performed repeatedly
+during the equilibrium line search.  The \code{cost.integrator} function uses adaptive quadrature and Simpson's rule for
+approximating definite integrals.
 
-Helper functions are also available to construct cost (and objective) functions in the classic form known as
-\acronym{\link{BPR}} (Bureau of Public Roads, a precursor of the Federal Highway Administration).
+It is possible to write objective functions that ignore certain assignment classes (for example, if loading a certain
+class always at free-flow conditions).  It is nevertheless usually more efficient in those cases to construct multiple
+assignment sets and load the classes separately.
+
+Helper functions are also available to construct cost (and objective) functions in the classic form known as the
+\acronym{\link{BPR}} formula (\dfn{\acronym{BPR}} stands for \dQuote{Bureau of Public Roads}, a precursor of the
+Federal Highway Administration).
 
 }
 \value{

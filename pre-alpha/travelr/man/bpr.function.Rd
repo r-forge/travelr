@@ -62,8 +62,8 @@ The functional form of the Bureau of Public Roads function looks like this:
 \deqn{cost = TIME * \left(1+ALPHA*\left(\frac{volume}{CAPACITY}\right)^{BETA}\right)}{cost = TIME * ( 1 + ALPHA * (volume/CAPACITY)^BETA)}
 
 The parameters in upper case must be supplied as elements of the \code{cost.data} parameter, or in the environment from
-which build.BPR.function is called.  They must either have the same structure (either dQuote{vector} or
-dQuote{data.frame}) as the set of volumes that will be passed to the function, or be amenable to conversion by the
+which build.BPR.function is called.  They must either have the same structure (either \dQuote{vector} or
+\dQuote{data.frame}) as the set of volumes that will be passed to the function, or be amenable to conversion by the
 standard R recycling rules.  The parameters that are supplied for the BPR function are defined as follows:
 
 \describe{

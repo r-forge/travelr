@@ -16,6 +16,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \name{cost.functions}
+\alias{cost function}
 \alias{cost.function}
 \alias{cost.functions}
 \alias{routing cost}
@@ -46,9 +47,9 @@ evaluated separately.  That can be useful if, for example, certain assignment cl
 evaluated differently than other classes.  Passenger vehicles, for example, may be considerably more sensitive to the
 presence of other trucks.
 
-If the assignment set is defined with a \code{\link{cost.volume.type}} of dQuote{vector}, the \code{volume} passed to
+If the assignment set is defined with a \code{\link{cost.volume.type}} of \dQuote{vector}, the \code{volume} passed to
 the cost function will be a vector corresponding to the sum of all the class volumes on each link.  Otherwise, if the
-\code{\link{cost.volume.type}} is dQuote{matrix}, a \code{data.frame} will be passed with the link volume for each class
+\code{\link{cost.volume.type}} is \dQuote{matrix}, a \code{data.frame} will be passed with the link volume for each class
 in its own column.
 
 Helper functions are available to construct cost (and objective) functions in the classic form known as

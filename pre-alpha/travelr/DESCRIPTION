@@ -1,6 +1,6 @@
 Package: travelr
-Version: 0.1-4
-Date: 2009-04-26
+Version: 0.1-5
+Date: 2009-05-07
 Title: Functions for Travel Demand Modeling
 Author: Jeremy Raw
 Maintainer: Jeremy Raw <jeremy.raw@earthlink.net>
@@ -13,4 +13,4 @@ Description: Provides a suite of functions for building travel demand models, wi
 Classification/JEL: R.41
 License: GPL (>= 2)
 LazyData: yes
-URL: http://www.opentravelmodels.org
+URL: http://travelr.r-forge.r-project.org
