@@ -77,7 +77,7 @@ as.highway.net <- function( links, numNodes, numZones, Penalty=NULL, nodes=NULL,
 	netwk$numZones<-as.integer(numZones)
 	if (!is.null(nodes)) netwk$nodes<-nodes
 	if (!is.null(nodeMap)) netwk$nodeMap<-nodeMap 
-	if ( is.null(Link.fields) ) netwk$Link.fields<-Link.fields
+	if (!is.null(Link.fields) ) netwk$Link.fields<-Link.fields
 	else netwk$Link.fields<-c(From="From",To="To")
 	if (!is.null(Penalty)) {
 		if (any(grep("^\\.PenaltyID$",names(links)))) warning("Replacing existing .PenaltyID field in turn penalties")

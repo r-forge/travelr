@@ -201,8 +201,8 @@ validate.assignment.classes <- function( aset, classes ) {
 	}
 	missing.demand<-sapply( classes, function(x) { if (is.null(x$demand)) TRUE; FALSE } )
 	if ( any(missing.demand) ) {
-		warning("Assignment set classes are missing required demand matrix:",
-			paste(names(classes)[missing.demand],collapse=", "))
+		warning("Assignment set classes are missing demand matrix:\n",
+			paste(names(classes)[missing.demand],collapse=", "),"\nSupply zero demand matrix if demand is not yet known.")
 		return(FALSE)
 	}
 	missing.network.set<-sapply( classes, function(x) { if (is.null(x$network.set)||class(x$network.set)!="highway.network.set") TRUE; FALSE } )
@@ -224,9 +224,17 @@ validate.assignment.classes <- function( aset, classes ) {
 #     class.list<-add.assignment.class(class.list,aclass)
 #     ## etc...
 
-make.assignment.class <- function( network, name, demand, link.subset=TRUE, penalty.subset=NULL, cost.function=NULL ) {
-	aclass<-list( name=name,demand=demand )
+make.assignment.class <- function( network, name, demand=NULL, link.subset=TRUE, penalty.subset=NULL, cost.function=NULL ) {
+	if ( is.null(name) ) stop("Assignment class must have a valid name (Same rules as R identifier).")
+	aclass<-list( name=name )
 	aclass$network.set<-.build.network.set(network,link.subset,penalty.subset)
+
+	if ( is.null(demand) ) {
+		warning("No demand matrix supplied; zero matrix will be created")
+		aclass$demand <- matrix(0,nrow=network$numZones,ncol=network$numZones)
+	} else
+		aclass$demand <- demand
+
 	if (!is.null(cost.function)) aclass$cost.function<-cost.function
 	class(aclass)<-"highway.assignment.class"
 	return(aclass)
