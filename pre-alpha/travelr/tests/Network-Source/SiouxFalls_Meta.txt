@@ -1,7 +1,0 @@
-Zones 24
-Flow 360600.0
-checkFlow 360600.0
-numZones 24
-numNodes 24
-firstThruNode 1
-numLinks 76.0
