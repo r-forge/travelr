@@ -49,7 +49,13 @@ echo $contents; } ?>
    <p>
 	  The definitive project status is maintained on the
 	  <a href="http://<?php echo $domain; ?>/projects/<?php echo $group_name; ?>/">TravelR project page</a>.
+	  Downloads of the built package will be available there (for the latest released version of R) once the R-Forge
+	  build service is back in action.
    </p>
+
+   <p>TravelR will be discussed at the <a href="http://www.useR2010.org">R User Conference</a> in Gaithersburg, Maryland,
+      on Thursday, July 22, 2010.  The presentation abstract is <a href="http://www.user2010.org/abstracts/Raw.pdf">here
+      (PDF)</a>.</p>
 
    <p> The TravelR project's first package, not suprisingly named "<strong>travelr</strong>", is in "pre-alpha" state
 (the code is not quite complete, what is there sort of works, but what works and what doesn't is changing daily and
