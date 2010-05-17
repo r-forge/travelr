@@ -30,7 +30,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 </a>
 </td></tr>
 </table>
-<img src="https://r-forge.r-project.org/themes/rforge/imagesrf/logo.png" border="0" alt="" /
 
 <!-- own website starts here, the following may be changed as you like -->
 
