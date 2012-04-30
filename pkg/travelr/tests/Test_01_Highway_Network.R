@@ -188,7 +188,8 @@ for (d in rev(dirs)) {
 		}
 
 		# Then save the files
-		n.out<-paste("data/",n,".rda",sep="")
+#		n.out<-paste("data/",n,".rda",sep="")
+		n.out<-paste(n,".rda",sep="")
 		out<-paste(n,c(".net",".od"),sep="")
 		cat("Saving",n,"as",n.out)
 		assign(out[1],temp.hwy)

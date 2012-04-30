@@ -12,7 +12,7 @@
 % 
 %   A copy of the GNU General Public License is available at
 %   http://www.r-project.org/Licenses/
-%   and included in the R distribution (in directory ‘share/licenses’).
+%   and included in the R distribution (in directory 'share/licenses').
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \name{intercept.set}
@@ -58,10 +58,10 @@ Jeremy Raw
 \examples{
 \dontrun{
 # Select links 17 and 24
-select.links <- ( network$Links$.LinkID %in% c(17,24) )
+select.links <- ( network$Links$.LinkID %%i%% c(17,24) )
 
-# but only if the trips originate in zones 1:3, and end up in zones 12:24
-zone.pairs <- data.matrix(expand.grid(c(1:3,12:24)))
+# but only if the trips originate in zones 1,3 and 5, and end up in zones 12:24
+zone.pairs <- data.matrix(expand.grid(c(1,3,5),c(12:24)))
 select.matrix <- matrix(0,nrow=network$numZones,ncol=network$numZones)
 select.matrix[zone.pairs] <- 1
 select.od <- function(od) { od * select.matrix }

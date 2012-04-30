@@ -2,7 +2,7 @@ suppressPackageStartupMessages(library(travelr))
 
 # Load SiouxFalls network
 
-load("data/SiouxFalls.rda")
+load("SiouxFalls.rda")
 stopifnot(exists("SiouxFalls.net"))
 stopifnot(exists("SiouxFalls.od"))
 
@@ -45,7 +45,7 @@ str(aset.sf)
 # Save out an .Rdata file containing:
 #    SiouxFalls network, assignment set
 #    Richmond network, assignment set (total), assignment set (multi)
-save(SiouxFalls.net,SiouxFalls.od,aset.sf,file="data/SiouxFallsAset.Rdata")
+save(SiouxFalls.net,SiouxFalls.od,aset.sf,file="SiouxFallsAset.Rdata")
 
 # That should be all we need for further testing (Test_03_Assignment)
 # This code will become part of the basic vignettes showing how to manipulate

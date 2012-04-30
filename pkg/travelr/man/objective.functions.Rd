@@ -12,7 +12,7 @@
 % 
 %   A copy of the GNU General Public License is available at
 %   http://www.r-project.org/Licenses/
-%   and included in the R distribution (in directory ‘share/licenses’).
+%   and included in the R distribution (in directory 'share/licenses').
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \name{objective.functions}

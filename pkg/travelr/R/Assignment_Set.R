@@ -196,7 +196,7 @@ validate.assignment.classes <- function( aset, classes ) {
 	missing.cost.function<-sapply( c(aset$classes,classes), function(x) { if (is.null(x$cost.function)) TRUE; FALSE } )
 	if ( !all(missing.cost.function) && any(missing.cost.function) ) {
 		message("Assignment set classes have incomplete class functions:",
-			paste(names(classes)[missing.cost.function],collapse=", "))
+			paste(names(classes)[missing.cost.function],collapse=", ")) # TODO: clean up indexing to handle errors better
 		return(FALSE)
 	}
 	missing.demand<-sapply( classes, function(x) { if (is.null(x$demand)) TRUE; FALSE } )
@@ -252,7 +252,7 @@ add.assignment.class.highway.assignment.set <- function( classes, aclass ) {
 	aset <- classes
 	if ( class(aclass)!="highway.assignment.class" )
 		stop("Must use make.assignment.class and add.assignment.classes to build an assignment class")
-	if ( validate.assignment.classes(aset,added.class ) ) {
+	if ( validate.assignment.classes(aset,added.class ) ) {  # TODO: second parameter is wrong
 		if ( all(match(aclass$name,names(aset$classes),nomatch=0)==0) ) {
 			added.class <- list(aclass)
 			names(added.class) <- aclass$name

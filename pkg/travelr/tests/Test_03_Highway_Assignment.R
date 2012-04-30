@@ -3,7 +3,7 @@ library(foreign)
 
 # load prepared assignment sets and run them through some assignment algorithms.
 
-load(file="data/SiouxFallsAset.Rdata")
+load(file="SiouxFallsAset.Rdata")
 
 options(width=120)
 cat("SiouxFalls test assignment\n")
@@ -113,4 +113,4 @@ cat(paste(rep("=",80),collapse=""),"\n")
 cat("Assignment with Frank-Wolfe method\n")
 aresult<-highway.assign(aset.sf,method="Frank.Wolfe",control=list(verbose=1,log=TRUE,max.iter=100))
 print(aresult$log)
-save(aresult,file="MSA_Assignment_Results.Rdata")
+save(aresult,file="Frank-Wolfe_Assignment_Results.Rdata")
