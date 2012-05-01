@@ -229,8 +229,10 @@ int PathBuilder::onePath( int origin, Heap & queue ) {
 	int zonesRemaining = numZones() - 1; // Already found the origin
 	PathElement * SPT = SPF.getSPTBuffer(origin);
 	CostElement * SPC = SPF.getCosts(origin);
-	if (!SPC)
+	if (!SPC) {
+		Rprintf("Unallocated cost element array (memory problems?)\n");
 		return zonesRemaining;
+	}
 
 	queue.Clear();
 	Candidate * curr = queue.Pool();
@@ -260,9 +262,7 @@ int PathBuilder::onePath( int origin, Heap & queue ) {
 	// -- we only span the "zones" (terminal nodes)
 	while ( zonesRemaining>0 ) {
 		if ( !SPT[A].isAllocated() ) {			// Screwed up algorithm: should throw something!
-#ifdef DEBUG_TRAVELR_PATH
-			Rprintf("Parent node is not allocated!\n");
-#endif
+			Rprintf("Parent node of %d is not allocated!\n",A);
 			break;
 		}
 		if ( A>=firstThruNode() ) {  // typically zones are not through nodes, but they could be
@@ -300,7 +300,7 @@ int PathBuilder::onePath( int origin, Heap & queue ) {
 // #endif
 				}
 #ifdef DEBUG_TRAVELR_PATH
-				Rprintf("%dA ",B);
+				Rprintf("%d ",B);
 #endif
 			}
 #ifdef DEBUG_TRAVELR_PATH
@@ -317,9 +317,7 @@ int PathBuilder::onePath( int origin, Heap & queue ) {
 		}
 		if ( A==NO_PATH_ELEMENT )				// got to bottom of the queue with no unallocated element
 		{
-#ifdef DEBUG_TRAVELR_PATH
-			Rprintf("Out of candidates!  Network is probably unconnected.\n");
-#endif
+			Rprintf("Out of unallocated candidates for next node!  Network is probably unconnected.\n");
 			break;								// so we're done with some zones inaccessible
 		}
 		SPT[A].Allocate();						// Mark the new A node as allocated
@@ -339,8 +337,10 @@ int PathBuilder::Paths( double * costs, int origins_sought ) {
 	int result = 0;
 
 	num_origins = conformOrigins(origins_sought);
-	if ( num_origins==0 )
+	if ( num_origins==0 ) {
+		Rprintf("No origins to search\n");
 		return -1;
+	}
 	double maxpath = setCosts(costs);
 	Heap queue(numLinks()/2);
 
@@ -357,12 +357,10 @@ int PathBuilder::Paths( double * costs, int origins_sought ) {
 			SPC[p].SetCost(maxpath);
 		}
 		if ( (result=onePath ( z, queue ))!=0 ) {
-#ifdef DEBUG_TRAVELR_PATH
 			if ( result>0 )
 				Rprintf("Origin: %d - failed to find %d destination%s\n",z,result,(result>1?"s":""));
 			else
 				Rprintf("Path building internal failure: %d - check heap size and capacity (%d out of %d)\n",result,queue.getSize(), queue.getCapacity());
-#endif
 			break;
 		}
 	}

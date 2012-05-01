@@ -266,7 +266,7 @@ extern "C"
 	// Construct the path builder itself, using allocated R objects to hold computed results.
 
 	int result = PathBuilder( &netwk, spf, REAL(rCostTree) ).Paths(costs);
-	if (result) error("build_paths_and_load failed with result %d\n",result);
+	if (result) error("build_and_load_paths failed with result %d\n",result);
 
 	// Now build the variables required for the load
 
