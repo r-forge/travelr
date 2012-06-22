@@ -39,7 +39,7 @@ highway.assign <- function( aset, method=c("AON","MSA","Frank.Wolfe","ParTan"), 
 
 	# First check the aset parameter
 	if (class(aset)!="highway.assignment.set")
-		stop("Must provide an assignment.set object as first parameter (aset)")
+		stop(gettext("Must provide an assignment.set object as first parameter (aset)"))
 	# Then find the appropriate method
 	if (length(method)>1) {
 		method<-method[1] # which means the default method is the first in the built-in list
@@ -175,7 +175,7 @@ build.log.function <- function(control) {
 .highway.assignment.AON <- function(aset,control) {
 	verbose <- parse.control(control,"verbose")
 	if ( verbose>0 )
-		message("All-or-Nothing (AON) highway assignment\n")
+		message(gettext("All-or-Nothing (AON) highway assignment\n"))
 	assign.results<-build.and.load.paths(aset,aset$ff.cost)
 	intercept<-(build.intercept.function(iset<-parse.control(control,"intercept"),aset))(assign.results$paths)
 	return(list(aset=aset,costs=aset$ff.cost,
@@ -188,12 +188,12 @@ build.log.function <- function(control) {
 	log.function<-build.log.function(control)
 	verbose <- parse.control(control,"verbose")
 	if ( verbose>0 )
-		message("Multiple Successive Averages (MSA) highway assignment\n")
+		message(gettext("Multiple Successive Averages (MSA) highway assignment\n"))
 	max.iter <- parse.control(control,"max.iter",4)
 	if (attr(max.iter,"default")) {
 		message(sprintf(gettext("Maximum iterations for MSA assignment set to default (%d)\n"),max.iter))
 	} else if ( verbose>0 ) {
-		message(sprintf("Maximum iterations for MSA assignment set to %d\n"),max.iter)
+		message(sprintf(gettext("Maximum iterations for MSA assignment set to %d\n"),max.iter))
 	}
 	control$max.iter<-max.iter
 
@@ -237,7 +237,7 @@ build.log.function <- function(control) {
 	log.function<-build.log.function(control)
 	verbose <- parse.control(control,"verbose")
 	if ( verbose>0 )
-		message("Frank-Wolfe highway assignment\n")
+		message(gettext("Frank-Wolfe highway assignment\n"))
 
 	# Construct helper values and functions
 	flow<-sum(sapply(aset$classes,function(ac)sum(ac$demand),USE.NAMES=FALSE))
@@ -281,7 +281,7 @@ build.log.function <- function(control) {
 	log.function<-build.log.function(control)
 	verbose <- parse.control(control,"verbose")
 	if ( verbose>0 )
-		message("ParTan highway assignment\n")
+		message(gettext("ParTan highway assignment\n"))
 
 	# Construct helper values and functions
 	flow<-sum(sapply(aset$classes,function(ac)sum(ac$demand),USE.NAMES=FALSE))
